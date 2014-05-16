@@ -35,11 +35,10 @@ private:
 	bool		_harrisUsed;
 	double		_weightCoefficientForHarrisAutocorrelation;
 	int			_count;
-	CvArr*		_imageArray;
-	Corner* 	_corners;
+	Corner** 	_corners;
 
 public:
-	CornerFinder(CvArr* array, Corner* corners);
+	CornerFinder(CvArr** array, Corner** corners, int count);
 	~CornerFinder();
 	void setQualityLevel(double value);
 	void setMinimumDistance(double value);
@@ -49,3 +48,5 @@ public:
 	void setBlockSize(int value);
 	virtual void perform();
 };
+
+#endif

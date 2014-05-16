@@ -9,11 +9,11 @@
  * @bug nothing atm
  */
 
-#ifndef _LUKASKANADE_H
-#define _LUKASKANADE_H
+#ifndef _HORNKSCHUNCK_H
+#define _HORNKSCHUNCK_H
 
 /**
- * @file lukasKanade.h 
+ * @file hornSchunck.h 
  *
  * algorithme computing to find the optical flow, saved in vels img
  */
@@ -24,14 +24,14 @@
 #include <highgui.h>
 #include "opticalFlowCalculater.h"
 
-class LukasKanade : public OpticalFlowCalculater
+class HornSchunck : public OpticalFlowCalculater
 {
 
 private:
 
 public:
-	LukasKanade(CvArr** array);
-	~LukasKanade();
+	HornSchunck(CvArr** array);
+	~HornSchunck();
 	virtual void perform();
 };
 
