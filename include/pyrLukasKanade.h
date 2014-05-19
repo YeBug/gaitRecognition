@@ -43,6 +43,9 @@ public:
 	void setWindowSize(CvSize value);
 	void setFlags(int flags);
 	void setLevel(int value);
+	char* getStatus();
+	float* getTrackError();
+	Corner* getOutCorners();
 	virtual void perform();
 };
 

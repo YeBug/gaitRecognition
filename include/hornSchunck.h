@@ -28,10 +28,16 @@ class HornSchunck : public OpticalFlowCalculater
 {
 
 private:
-
+	bool _usePrevious;
+	double _lambda;
+	CvTermCriteria _criteria;
 public:
 	HornSchunck(CvArr** array);
 	~HornSchunck();
+	void usePrevious();
+	void doNotUsePrevious();
+	void setCriteria(int type, int max_iter, double epsilon);
+	void setLambda(double value);
 	virtual void perform();
 };
 

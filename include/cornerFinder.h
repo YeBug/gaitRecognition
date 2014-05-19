@@ -15,7 +15,7 @@
 /**
  * @file cornerFinder.h 
  *
- * algoithme finding corners points in a picture/image/frame using Shi and Tomasi Algorithme or Harris' one
+ * algorithme finding corners points in a picture/image/frame using Shi and Tomasi Algorithme or Harris' one
  */
 
 #include <iostream>
@@ -23,7 +23,6 @@
 #include <cxcore.h>
 #include <highgui.h>
 #include "imageAlgorithme.h"
-#include "imageEnum.h"
 
 class CornerFinder : public virtual ImageAlgorithme
 {
@@ -44,9 +43,9 @@ public:
 	void setMinimumDistance(double value);
 	void useHarris();
 	void doNotUseHarris();
-	void applyMask();
+	void applyMask(CvArr* mask);
 	void setBlockSize(int value);
+	int  getCornersCount();
 	virtual void perform();
-};
 
 #endif

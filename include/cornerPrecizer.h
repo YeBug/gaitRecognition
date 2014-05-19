@@ -23,6 +23,7 @@
 #include <cxcore.h>
 #include <highgui.h>
 #include "imageAlgorithme.h"
+
 class CornerPrecizer : public virtual ImageAlgorithme
 {
 
