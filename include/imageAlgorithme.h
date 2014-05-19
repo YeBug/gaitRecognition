@@ -23,6 +23,7 @@
 #include <cxcore.h>
 #include <highgui.h>
 #include "imageEnum.h"
+#include "corner.h"
 
 class ImageAlgorithme :  
 {
