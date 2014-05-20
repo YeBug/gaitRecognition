@@ -50,8 +50,6 @@ Tracker::Tracker()
 	_algos.push_back(new PyrLukasKanade(_imageArray,&_corners,cornerCount));
 	_algos.push_back(new HornSchunck(_imageArray));
 
-	runAlgos();
-
 }
 
 Tracker::~Tracker() 
