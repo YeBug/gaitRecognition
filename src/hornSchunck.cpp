@@ -21,7 +21,7 @@
 #include <highgui.h>
 #include "hornSchunck.h"
 
-HornSchunck::HornSchunck(CvArr** array)
+HornSchunck::HornSchunck(CvArr* array) : OpticalFlowCalculater(array)
 {
 	_imageArray = array;
 	_windowSize = cvSize(10,10);
@@ -39,11 +39,6 @@ HornSchunck::~HornSchunck()
 void HornSchunck::setCriteria(int type, int max_iter, double epsilon)
 {
 	_criteria = cvTermCriteria(type,max_iter,epsilon);
-}
-
-void HornSchunck::setWindowSize(CvSize value)
-{
-	_windowSize = value;
 }
 
 void HornSchunck::usePrevious()
@@ -64,11 +59,11 @@ void setLambda(double value)
 void HornSchunck::perform()
 {
 	cvCalcOpticalFlowHS(
-		_imageArray[GR_INPUT_IMAGE],
-		_imageArray[GR_OUTPUT_IMAGE],
+		&_imageArray[GR_INPUT_IMAGE],
+		&_imageArray[GR_OUTPUT_IMAGE],
 		_usePrevious,
-		_imageArray[GR_VELX_IMAGE],
-		_imageArray[GR_VELY_IMAGE],
+		&_imageArray[GR_VELX_IMAGE],
+		&_imageArray[GR_VELY_IMAGE],
 		_lambda
 		_criteria);
 	usePrevious();

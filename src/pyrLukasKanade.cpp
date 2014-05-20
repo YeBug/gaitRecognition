@@ -21,7 +21,7 @@
 #include <highgui.h>
 #include "pyrLukasKanade.h"
 
-PyrLukasKanade::PyrLukasKanade(CvArr**, Corner** corners, int count)
+PyrLukasKanade::PyrLukasKanade(CvArr*, Corner** corners, int count) : OpticalFlowCalculater(array)
 {
 	_imageArray = array;
 	_corners = corners;
@@ -49,11 +49,6 @@ PyrLukasKanade::~PyrLukasKanade()
 void PyrLukasKanade::setCriteria(int type, int max_iter, double epsilon)
 {
 	_criteria = cvTermCriteria(type,max_iter,epsilon);
-}
-
-void PyrLukasKanade::setWindowSize(CvSize value)
-{
-	_windowSize = value;
 }
 
 void PyrLukasKanade::setFlags(int value)
@@ -84,10 +79,10 @@ Corner* PyrLukasKanade::getOurCorners()
 void PyrLukasKanade::perform()
 {
 	cvCalcOpticalFlowPyrLK(
-		_imageArray[GR_INPUT_IMAGE],
-		_imageArray[GR_OUTPUT_IMAGE],
-		_imageArray[GR_PYRA_IMAGE],
-		_imageArray[GR_PYRB_IMAGE],
+		&_imageArray[GR_INPUT_IMAGE],
+		&_imageArray[GR_OUTPUT_IMAGE],
+		&_imageArray[GR_PYRA_IMAGE],
+		&_imageArray[GR_PYRB_IMAGE],
 		_corners;
 		_outCorners,
 		_count,

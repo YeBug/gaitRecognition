@@ -21,7 +21,7 @@
 #include <highgui.h>
 #include "cornerPrecizer.h"
 
-CornerPrecizer::CornerPrecizer(CvArr** array, Corner** corners, int count)
+CornerPrecizer::CornerPrecizer(CvArr* array, Corner** corners, int count) : imageAlgorithem(array)
 {
 	_imageArray = array;
 	_corners = corners;
@@ -56,7 +56,7 @@ void CornerPrecizer::setZeroZone(CvSize value)
 void CornerPrecizer::perform()
 {
 	cvFindCornerSubPix(
-		_imageArray[GR_INPUT_IMAGE],
+		&_imageArray[GR_INPUT_IMAGE],
 		*_corners,
 		&_count,
 		_windowSize,

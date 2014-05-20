@@ -21,7 +21,7 @@
 #include <highgui.h>
 #include "lukasKanade.h"
 
-LukasKanade::LukasKanade(CvArr** array)
+LukasKanade::LukasKanade(CvArr* array) : OpticalFlowCalculater(array)
 {
 	_imageArray = array;
 	_windowSize = cvSize(10,10);
@@ -33,17 +33,12 @@ LukasKanade::~LukasKanade()
 	delete _imageArray;
 }
 
-void LukasKanade::setWindowSize(CvSize value)
-{
-	_windowSize = value;
-}
-
 void LukasKanade::perform()
 {
 	cvCalcOpticalFlowLK(
-		_imageArray[GR_INPUT_IMAGE],
-		_imageArray[GR_OUTPUT_IMAGE],
+		&_imageArray[GR_INPUT_IMAGE],
+		&_imageArray[GR_OUTPUT_IMAGE],
 		_windowSize,
-		_imageArray[GR_VELX_IMAGE],
-		_imageArray[GR_VELY_IMAGE]);
+		&_imageArray[GR_VELX_IMAGE],
+		&_imageArray[GR_VELY_IMAGE]);
 }

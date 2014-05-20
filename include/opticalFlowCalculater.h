@@ -31,7 +31,7 @@ private:
 	CvSize	_windowSize;
 
 public:
-	OpticalFlowCalculater(CvArr** array);
+	OpticalFlowCalculater(CvArr* array);
 	~OpticalFlowCalculater();
 	void setWindowSize(CvSize value);
 	virtual void perform();

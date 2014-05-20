@@ -37,10 +37,9 @@ private:
 	Corner** 		_corners;
 	Corner** 		_outCorners;
 public:
-	PyrLukasKanade(CvArr** array, Corner** corners, int count);
+	PyrLukasKanade(CvArr* array, Corner** corners, int count);
 	~PyrLukasKanade();
 	void setCriteria(int type, int max_iter, double epsilon);
-	void setWindowSize(CvSize value);
 	void setFlags(int flags);
 	void setLevel(int value);
 	char* getStatus();

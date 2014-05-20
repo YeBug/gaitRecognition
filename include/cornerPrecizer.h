@@ -35,7 +35,7 @@ private:
 	CvTermCriteria	_criteria;
 
 public:
-	CornerPrecizer(CvArr** array, Corner** corners, int count);
+	CornerPrecizer(CvArr* array, Corner** corners, int count);
 	~CornerPrecizer();
 	void setCriteria(int type, int max_iter, double epsilon);
 	void setWindowSize(CvSize value);

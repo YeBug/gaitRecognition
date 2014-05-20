@@ -37,7 +37,7 @@ private:
 	Corner** 	_corners;
 
 public:
-	CornerFinder(CvArr** array, Corner** corners, int count);
+	CornerFinder(CvArr* array, Corner** corners, int count);
 	~CornerFinder();
 	void setQualityLevel(double value);
 	void setMinimumDistance(double value);

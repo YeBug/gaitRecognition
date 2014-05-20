@@ -30,7 +30,7 @@ class LukasKanade : public OpticalFlowCalculater
 private:
 
 public:
-	LukasKanade(CvArr** array);
+	LukasKanade(CvArr* array);
 	~LukasKanade();
 	virtual void perform();
 };

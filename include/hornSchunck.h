@@ -32,7 +32,7 @@ private:
 	double _lambda;
 	CvTermCriteria _criteria;
 public:
-	HornSchunck(CvArr** array);
+	HornSchunck(CvArr* array);
 	~HornSchunck();
 	void usePrevious();
 	void doNotUsePrevious();
