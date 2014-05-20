@@ -30,6 +30,7 @@ class CornerPrecizer : public virtual ImageAlgorithme
 private:
 	int				_count;
 	Corner** 		_corners;
+	Corner** 		_outCorners;
 	CvSize			_windowSize;
 	CvSize			_zeroZone;
 	CvTermCriteria	_criteria;

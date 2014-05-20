@@ -27,6 +27,6 @@ enum AlgorithmeEnum
 	GR_OPTICAL_FLOW_LK,
 	GR_OPTICAL_FLOW_PYR_LK,
 	GR_OPTICAL_FLOW_HS
-}
+};
 
 #endif

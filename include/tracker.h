@@ -32,22 +32,23 @@
 #include "hornSchuck.h"
 #include "gaitPrint.h"
 
-#define GR_IMAGE_NUMBER 11 
- 
+#define GR_IMAGE_NUMBER 12 
+#define GR_CORNER_NUMBER 500
+
+
 class Tracker : 
 {
 
 private:
 	CvArr*			_imageArray;
 	Corner* 		_corners;
-	std::vector< imageAlgorithme > _algos;
+	Corner* 		_outCorners
+	std::vector< imageAlgorithme* > _algos;
 
 public:
 	Tracker();
 	~Tracker();
-	void init();
-	void run();
-	void stop();
+	void runAlgos();
 	GaitPrint computeGaitPrint();
-
+};
 #endif
