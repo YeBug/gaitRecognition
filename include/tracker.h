@@ -30,7 +30,7 @@
 #include "lukasKanade.h"
 #include "pyrLukasKanade.h"
 #include "hornSchuck.h"
-#include "gaitPrint.h"
+//#include "gaitPrint.h"
 
 #define GR_IMAGE_NUMBER 12 
 #define GR_CORNER_NUMBER 500
@@ -49,6 +49,6 @@ public:
 	Tracker();
 	~Tracker();
 	void runAlgos();
-	GaitPrint computeGaitPrint();
+//	GaitPrint computeGaitPrint();
 };
 #endif

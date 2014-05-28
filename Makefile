@@ -19,22 +19,27 @@ DATADIR = 		./data/
 CC = 			g++
 RM =			rm -f
 CPPFLAGS =		-Wall -Wextra -I$(IDIR)
-CCFLAGS =		-pedantic -ansi -03
+CCFLAGS =		-pedantic -ansi -O3
 LIBS =			-L$(LDIR)
 AR =			ar
 ARFLAGS =		lrcv
 
-.PHONY : all clean distclean tarball
+.PHONY : all clean distclean tarball testOpenCv
 
-all :
+all : testOpenCv
 
 # Non file target, make it easier to compile a prog
+testOpenCv: $(BDIR)testOpenCv
 
 
 # Target to create the real execs, own creation
+$(BDIR)testOpenCv: $(ODIR)algorithmeEnum.o  $(ODIR)corner.o  $(ODIR)cornerFinder.o  $(ODIR)cornerPrecizer.o  $(ODIR)hornSchunck.o $(ODIR)imageAlgorithme.o $(ODIR)imageEnum.o $(ODIR)lukasKanade.o  $(ODIR)main.o $(ODIR)opticalFlowCalculater.o $(ODIR)pyrLukasKanade.o $(ODIR)tracker.o
+	$(CC)  $(CCFLAGS) $(CPPFLAGS) $^ -o $@ `pkg-config --cflags --libs opencv`
 
 
 # Target to create all objects files
+$(ODIR)%.o: $(SDIR)%.cpp
+	$(CC)  $(CCFLAGS) $(CPPFLAGS) -c $< -o $@ 
 
 
 # Non file target, just to to basis function on all repository
