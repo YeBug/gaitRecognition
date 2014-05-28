@@ -20,9 +20,7 @@
  */
 
 #include <iostream>
-#include <cv.h>
-#include <cxcore.h>
-#include <highgui.h>
+#include<opencv2/highgui/highgui.hpp>
 
 typedef CvPoint2D32f Corner;
 

@@ -16,9 +16,6 @@
  */
 
 #include <iostream>
-#include <cv.h>
-#include <cxcore.h>
-#include <highgui.h>
 #include "imageAlgorithme.h"
 
 ImageAlgorithme::ImageAlgorithme(CvArr* array) : _imageArray(array)

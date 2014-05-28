@@ -18,12 +18,13 @@ DATADIR = 		./data/
 
 CC = 			g++
 RM =			rm -f
-CPPFLAGS =		-Wall -Wextra -I$(IDIR)
+OPENCVFLAGS =	`pkg-config --cflags opencv`
+OPENCVLIBS = 	`pkg-config --cflags --libs opencv`
+CPPFLAGS =		-Wall -Wextra -I$(IDIR) $(OPENCVFLAGS)
 CCFLAGS =		-pedantic -ansi -O3
 LIBS =			-L$(LDIR)
 AR =			ar
 ARFLAGS =		lrcv
-
 .PHONY : all clean distclean tarball testOpenCv
 
 all : testOpenCv
@@ -34,12 +35,12 @@ testOpenCv: $(BDIR)testOpenCv
 
 # Target to create the real execs, own creation
 $(BDIR)testOpenCv: $(ODIR)algorithmeEnum.o  $(ODIR)corner.o  $(ODIR)cornerFinder.o  $(ODIR)cornerPrecizer.o  $(ODIR)hornSchunck.o $(ODIR)imageAlgorithme.o $(ODIR)imageEnum.o $(ODIR)lukasKanade.o  $(ODIR)main.o $(ODIR)opticalFlowCalculater.o $(ODIR)pyrLukasKanade.o $(ODIR)tracker.o
-	$(CC)  $(CCFLAGS) $(CPPFLAGS) $^ -o $@ `pkg-config --cflags --libs opencv`
+	$(CC)  $(CCFLAGS) $(CPPFLAGS) $^ -o $@ $(OPENCVLIBS)
 
 
 # Target to create all objects files
 $(ODIR)%.o: $(SDIR)%.cpp
-	$(CC)  $(CCFLAGS) $(CPPFLAGS) -c $< -o $@ 
+	$(CC)  $(CCFLAGS) $(CPPFLAGS) -c $< -o $@ $(OPENCVLIBS)
 
 
 # Non file target, just to to basis function on all repository

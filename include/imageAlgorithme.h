@@ -19,20 +19,20 @@
  */
 
 #include <iostream>
+#include <opencv2/highgui/highgui.hpp>
 #include <cv.h>
-#include <cxcore.h>
 #include <highgui.h>
 #include "imageEnum.h"
 #include "corner.h"
 
-class ImageAlgorithme :  
+class ImageAlgorithme   
 {
 
-private:
-	CvArr**		_imageArray;
+protected:
+	CvArr*		_imageArray;
 
 public:
-	ImageAlgorithme(CvArr** array);
+	ImageAlgorithme(CvArr* array);
 	~ImageAlgorithme();
 	virtual void perform() = 0;
 };

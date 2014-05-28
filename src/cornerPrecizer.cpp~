@@ -16,6 +16,9 @@
  */
 
 #include <iostream>
+#include <cv.h>
+#include <cxcore.h>
+#include <highgui.h>
 #include "cornerPrecizer.h"
 
 CornerPrecizer::CornerPrecizer(CvArr* array, Corner** corners, int count) : imageAlgorithem(array)

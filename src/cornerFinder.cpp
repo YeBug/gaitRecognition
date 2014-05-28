@@ -16,12 +16,9 @@
  */
 
 #include <iostream>
-#include <cv.h>
-#include <cxcore.h>
-#include <highgui.h>
 #include "cornerFinder.h"
 
-CornerFinder::CornerFinder(CvArr* array, Corner** corners, int count) : imageAlgorithem(array)
+CornerFinder::CornerFinder(CvArr* array, Corner** corners, int count) : ImageAlgorithme(array)
 {
 	_imageArray = array;
 	_corners = corners;

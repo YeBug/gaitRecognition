@@ -10,23 +10,22 @@
  */
 
 /**
- * @file opticalFlowCalculater.cpp 
+ * @file imageAlgorithme.cpp 
  *
  * algorithme finding corners points in a picture/image/frame using Shi and Tomasi Algorithme or Harris' one
  */
 
 #include <iostream>
-#include "opticalFlowCalculater.h"
+#include <cv.h>
+#include <cxcore.h>
+#include <highgui.h>
+#include "imageAlgorithme.h"
 
-OpticalFlowCalculater::OpticalFlowCalculater(CvArr* array) : imageAlgorithme(array)
+ImageAlgorithme::ImageAlgorithme(CvArr* array) : _imageArray(array)
 {
 }
 
-OpticalFlowCalculater::~OpticalFlowCalculater() 
+ImageAlgorithme::~ImageAlgorithme() 
 {
-}
-
-void OpticalFlowCalculater::setWindowSize(CvSize value)
-{
-	_windowSize = value;
+	delete _imageArray;
 }

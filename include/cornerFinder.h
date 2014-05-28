@@ -19,9 +19,7 @@
  */
 
 #include <iostream>
-#include <cv.h>
-#include <cxcore.h>
-#include <highgui.h>
+#include <opencv2/highgui/highgui.hpp>
 #include "imageAlgorithme.h"
 
 class CornerFinder : public virtual ImageAlgorithme
@@ -47,5 +45,5 @@ public:
 	void setBlockSize(int value);
 	int  getCornersCount();
 	virtual void perform();
-
+};
 #endif

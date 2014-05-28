@@ -19,15 +19,13 @@
  */
 
 #include <iostream>
-#include <cv.h>
-#include <cxcore.h>
-#include <highgui.h>
+#include <opencv2/highgui/highgui.hpp>
 #include "imageEnum.h"
 
 class OpticalFlowCalculater : public virtual ImageAlgorithme
 {
 
-private:
+protected:
 	CvSize	_windowSize;
 
 public:

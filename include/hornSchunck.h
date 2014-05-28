@@ -19,9 +19,7 @@
  */
 
 #include <iostream>
-#include <cv.h>
-#include <cxcore.h>
-#include <highgui.h>
+#include <opencv2/highgui/highgui.hpp>
 #include "opticalFlowCalculater.h"
 
 class HornSchunck : public OpticalFlowCalculater

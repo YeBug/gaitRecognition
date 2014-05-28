@@ -16,6 +16,9 @@
  */
 
 #include <iostream>
+#include <cv.h>
+#include <cxcore.h>
+#include <highgui.h>
 #include "lukasKanade.h"
 
 LukasKanade::LukasKanade(CvArr* array) : OpticalFlowCalculater(array)

@@ -16,6 +16,9 @@
  */
 
 #include <iostream>
+#include <cv.h>
+#include <cxcore.h>
+#include <highgui.h>
 #include "pyrLukasKanade.h"
 
 PyrLukasKanade::PyrLukasKanade(CvArr*, Corner** corners, int count) : OpticalFlowCalculater(array)
