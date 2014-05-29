@@ -18,18 +18,16 @@
 #include <iostream>
 #include "pyrLukasKanade.h"
 
-PyrLukasKanade::PyrLukasKanade(CvArr*, Corner** corners, int count) : OpticalFlowCalculater(array)
+PyrLukasKanade::PyrLukasKanade(cv::Mat* array, Corner* corners, int count) : OpticalFlowCalculater(array)
 {
 	_imageArray = array;
 	_corners = corners;
-	_windowSize = cvSize(10,10);
+	_windowSize = cv::Size(31,31);
 	_count = count;
-	_level = 5;
-	_status = new char[_count];
-	_trackError = new float[_count];
-	_outCorners = new Corner[_count];
-	_criteria = cvTermCriteria(CV_TERCRIT_ITER | CV_TERMCRIT_EPS,20,0.30);
+	_level = 3;
+	_criteria = *(new cv::TermCriteria(CV_TERMCRIT_ITER | CV_TERMCRIT_EPS,20,0.30));
 	_flags = 0;
+	_minEigThreshold = 0.001;
 }
 
 PyrLukasKanade::~PyrLukasKanade() 
@@ -38,14 +36,11 @@ PyrLukasKanade::~PyrLukasKanade()
 	_corners	= NULL;
 	delete _imageArray;
 	delete _corners;
-	delete _outCorners;
-	delete _status;
-	delete _trackError;
 }
 
 void PyrLukasKanade::setCriteria(int type, int max_iter, double epsilon)
 {
-	_criteria = cvTermCriteria(type,max_iter,epsilon);
+	_criteria = *(new cv::TermCriteria(type,max_iter,epsilon));
 }
 
 void PyrLukasKanade::setFlags(int value)
@@ -58,35 +53,38 @@ void PyrLukasKanade::setLevel(int value)
 	_level = value;
 }
 
-char* PyrLukasKanade::getStatus()
+void PyrLukasKanade::setMinEigThreshold(double value)
 {
-	return _status;
+	_minEigThreshold = value;
 }
 
-float* PyrLukasKanade::getTrackError()
+std::vector<float> PyrLukasKanade::getTrackError()
 {
 	return _trackError;
 }
 
-Corner* PyrLukasKanade::getOurCorners()
+std::vector<uchar> PyrLukasKanade::getStatus()
 {
-	return _outCorners;
+	return _status;
+}
+
+Corner* PyrLukasKanade::getOutCorners()
+{
+	return new Corner(_outCorners);
 }
 
 void PyrLukasKanade::perform()
 {
-	cvCalcOpticalFlowPyrLK(
-		&_imageArray[GR_INPUT_IMAGE],
-		&_imageArray[GR_OUTPUT_IMAGE],
-		&_imageArray[GR_PYRA_IMAGE],
-		&_imageArray[GR_PYRB_IMAGE],
-		_corners;
+	calcOpticalFlowPyrLK(
+		_imageArray[GR_INPUT_IMAGE],
+		_imageArray[GR_INPUTB_IMAGE],
+		*_corners,
 		_outCorners,
-		_count,
+		_status,
+		_trackError,
 		_windowSize,
 		_level,
-		_status,
-		_trackError
 		_criteria,
-		_flags);
+		_flags,
+		_minEigThreshold);
 }

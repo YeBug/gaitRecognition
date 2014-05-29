@@ -18,9 +18,8 @@
 #include <iostream>
 #include "cornerFinder.h"
 
-CornerFinder::CornerFinder(CvArr* array, Corner** corners, int count) : ImageAlgorithme(array)
+CornerFinder::CornerFinder(cv::Mat* array, Corner* corners, int count) : ImageAlgorithme(array)
 {
-	_imageArray = array;
 	_corners = corners;
 	_count = count;
 	_qualityLevel = 0.01;
@@ -58,9 +57,9 @@ void CornerFinder::doNotUseHarris()
 	_harrisUsed = false;
 }
 
-void CornerFinder::applyMask(CvArr* mask)
+void CornerFinder::applyMask(cv::Mat* mask)
 {
-	_imageArray[GR_MASK_TRACK_IMAGE] = mask;
+	//_imageArray[GR_MASK_TRACK_IMAGE] = mask;
 }
 
 int CornerFinder::getCornersCount()
@@ -70,16 +69,13 @@ int CornerFinder::getCornersCount()
 
 void CornerFinder::perform()
 {
-	cvGoodFeaturesToTrack(
-		&_imageArray[GR_INPUT_IMAGE],
-		&_imageArray[GR_EIGEN_VALUE_IMAGE],
-		&_imageArray[GR_TEMP_IMAGE],
+	cv::goodFeaturesToTrack(
+		_imageArray[GR_INPUT_IMAGE],
 		*_corners,
-		&_count,
+		_count,
 		_qualityLevel,
 		_minimumDistance,
-		&_imageArray[GR_MASK_TRACK_IMAGE],
+		_imageArray[GR_MASK_TRACK_IMAGE],
 		_blockSize,
-		(int)_harrisUsed,
 		_weightCoefficientForHarrisAutocorrelation);
 }

@@ -20,28 +20,33 @@
 
 #include <iostream>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/video/tracking.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <vector>
 #include "opticalFlowCalculater.h"
 
 class PyrLukasKanade : public OpticalFlowCalculater
 {
 
 private:
-	int 			_count;
-	int 			_level;
-	char*			_status;
-	float*			_trackError;
-	int				_flags;
-	CvTermCriteria 	_criteria;
-	Corner** 		_corners;
-	Corner** 		_outCorners;
+	int 				_count;
+	int 				_level;
+	double				_minEigThreshold;
+	std::vector<uchar>	_status;
+	std::vector<float>	_trackError;
+	int					_flags;
+	cv::TermCriteria 	_criteria;
+	Corner* 			_corners;
+	Corner 				_outCorners;
 public:
-	PyrLukasKanade(CvArr* array, Corner** corners, int count);
+	PyrLukasKanade(cv::Mat* array, Corner* corners, int count);
 	~PyrLukasKanade();
 	void setCriteria(int type, int max_iter, double epsilon);
 	void setFlags(int flags);
 	void setLevel(int value);
-	char* getStatus();
-	float* getTrackError();
+	void setMinEigThreshold(double value);
+	std::vector<float> getTrackError();
+	std::vector<uchar> getStatus();
 	Corner* getOutCorners();
 	virtual void perform();
 };

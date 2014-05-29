@@ -18,7 +18,7 @@
 #include <iostream>
 #include "opticalFlowCalculater.h"
 
-OpticalFlowCalculater::OpticalFlowCalculater(CvArr* array) : imageAlgorithme(array)
+OpticalFlowCalculater::OpticalFlowCalculater(cv::Mat* array) : ImageAlgorithme(array)
 {
 }
 
@@ -26,7 +26,11 @@ OpticalFlowCalculater::~OpticalFlowCalculater()
 {
 }
 
-void OpticalFlowCalculater::setWindowSize(CvSize value)
+void OpticalFlowCalculater::setWindowSize(cv::Size value)
 {
 	_windowSize = value;
+}
+
+void OpticalFlowCalculater::perform() 
+{
 }

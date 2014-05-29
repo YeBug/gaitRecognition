@@ -18,7 +18,7 @@
 #include <iostream>
 #include "lukasKanade.h"
 
-LukasKanade::LukasKanade(CvArr* array) : OpticalFlowCalculater(array)
+LukasKanade::LukasKanade(cv::Mat* array) : OpticalFlowCalculater(array)
 {
 	_imageArray = array;
 	_windowSize = cvSize(10,10);

@@ -19,9 +19,9 @@
  */
 
 #include <iostream>
-#include <opencv2/highgui/highgui.hpp>
 #include <cv.h>
 #include <highgui.h>
+#include <opencv2/highgui/highgui.hpp>
 #include "imageEnum.h"
 #include "corner.h"
 
@@ -29,10 +29,11 @@ class ImageAlgorithme
 {
 
 protected:
-	CvArr*		_imageArray;
+	cv::Mat*		_imageArray;
 
 public:
-	ImageAlgorithme(CvArr* array);
+	ImageAlgorithme();
+	ImageAlgorithme(cv::Mat* array);
 	~ImageAlgorithme();
 	virtual void perform() = 0;
 };

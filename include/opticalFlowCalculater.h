@@ -20,18 +20,19 @@
 
 #include <iostream>
 #include <opencv2/highgui/highgui.hpp>
+#include "imageAlgorithme.h"
 #include "imageEnum.h"
 
 class OpticalFlowCalculater : public virtual ImageAlgorithme
 {
 
 protected:
-	CvSize	_windowSize;
+	cv::Size	_windowSize;
 
 public:
-	OpticalFlowCalculater(CvArr* array);
+	OpticalFlowCalculater(cv::Mat* array);
 	~OpticalFlowCalculater();
-	void setWindowSize(CvSize value);
+	void setWindowSize(cv::Size value);
 	virtual void perform();
 };
 

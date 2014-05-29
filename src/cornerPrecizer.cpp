@@ -18,14 +18,12 @@
 #include <iostream>
 #include "cornerPrecizer.h"
 
-CornerPrecizer::CornerPrecizer(CvArr* array, Corner** corners, int count) : imageAlgorithem(array)
+CornerPrecizer::CornerPrecizer(cv::Mat* array, Corner* corners) : ImageAlgorithme(array)
 {
-	_imageArray = array;
 	_corners = corners;
-	_count = count;
-	_windowSize = cvSize(10,10);
-	_zeroZone = cvSize(-1,-1);
-	_criteria = cvTermCriteria(CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.03);
+	_windowSize = cv::Size(10,10);
+	_zeroZone = cv::Size(-1,-1);
+	_criteria = *(new cv::TermCriteria(CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.03));
 }
 
 CornerPrecizer::~CornerPrecizer() 
@@ -38,7 +36,7 @@ CornerPrecizer::~CornerPrecizer()
 
 void CornerPrecizer::setCriteria(int type, int max_iter, double epsilon)
 {
-	_criteria = cvTermCriteria(type,max_iter,epsilon);
+	_criteria = *(new cv::TermCriteria(type,max_iter,epsilon));
 }
 
 void CornerPrecizer::setWindowSize(CvSize value)
@@ -52,10 +50,9 @@ void CornerPrecizer::setZeroZone(CvSize value)
 }
 void CornerPrecizer::perform()
 {
-	cvFindCornerSubPix(
-		&_imageArray[GR_INPUT_IMAGE],
+	cornerSubPix(
+		_imageArray[GR_INPUT_IMAGE],
 		*_corners,
-		&_count,
 		_windowSize,
 		_zeroZone,
 		_criteria);

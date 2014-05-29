@@ -26,15 +26,14 @@ class CornerPrecizer : public virtual ImageAlgorithme
 {
 
 private:
-	int				_count;
-	Corner** 		_corners;
-	Corner** 		_outCorners;
-	CvSize			_windowSize;
-	CvSize			_zeroZone;
-	CvTermCriteria	_criteria;
+	Corner* 		_corners;
+	Corner* 		_outCorners;
+	cv::Size		_windowSize;
+	cv::Size		_zeroZone;
+	cv::TermCriteria	_criteria;
 
 public:
-	CornerPrecizer(CvArr* array, Corner** corners, int count);
+	CornerPrecizer(cv::Mat* array, Corner* corners);
 	~CornerPrecizer();
 	void setCriteria(int type, int max_iter, double epsilon);
 	void setWindowSize(CvSize value);

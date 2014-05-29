@@ -32,16 +32,16 @@ private:
 	bool		_harrisUsed;
 	double		_weightCoefficientForHarrisAutocorrelation;
 	int			_count;
-	Corner** 	_corners;
+	Corner* 	_corners;
 
 public:
-	CornerFinder(CvArr* array, Corner** corners, int count);
+	CornerFinder(cv::Mat* array, Corner* corners, int count);
 	~CornerFinder();
 	void setQualityLevel(double value);
 	void setMinimumDistance(double value);
 	void useHarris();
 	void doNotUseHarris();
-	void applyMask(CvArr* mask);
+	void applyMask(cv::Mat* mask);
 	void setBlockSize(int value);
 	int  getCornersCount();
 	virtual void perform();

@@ -19,34 +19,42 @@
  */
 
 #include <iostream>
-#include<opencv2/highgui/highgui.hpp>
-#include <vector.h>
+#include <opencv2/highgui/highgui.hpp>
+#include <vector>
+#include "algorithmeEnum.h"
 #include "imageAlgorithme.h"
 #include "imageEnum.h"
 #include "cornerFinder.h"
 #include "cornerPrecizer.h"
 #include "lukasKanade.h"
 #include "pyrLukasKanade.h"
-#include "hornSchuck.h"
+#include "hornSchunck.h"
 //#include "gaitPrint.h"
 
 #define GR_IMAGE_NUMBER 12 
 #define GR_CORNER_NUMBER 500
 
-
-class Tracker : 
+class Tracker
 {
 
 private:
-	CvArr*			_imageArray;
+	cv::Mat*		_imageArray;
 	Corner* 		_corners;
-	Corner* 		_outCorners
-	std::vector< imageAlgorithme* > _algos;
+    Corner* 		_outCorners;
+    CornerFinder* 	_cornerFinder;
+	CornerPrecizer*	_cornerPrecizer;
+	LukasKanade*	_lukasKanade;
+	PyrLukasKanade*	_pyrLK;
+	HornSchunck*	_hornSchunck;
+	bool			_init;
 
 public:
 	Tracker();
 	~Tracker();
 	void runAlgos();
+	void reInit();
+	void setInputImage1(cv::Mat img);
+	void setInputImage2(cv::Mat img);
 //	GaitPrint computeGaitPrint();
 };
 #endif

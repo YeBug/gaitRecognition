@@ -20,8 +20,9 @@
  */
 
 #include <iostream>
-#include<opencv2/highgui/highgui.hpp>
+#include <vector>
+#include <opencv2/highgui/highgui.hpp>
 
-typedef CvPoint2D32f Corner;
+typedef std::vector<cv::Point2f> Corner;
 
 #endif

@@ -18,7 +18,11 @@
 #include <iostream>
 #include "imageAlgorithme.h"
 
-ImageAlgorithme::ImageAlgorithme(CvArr* array) : _imageArray(array)
+ImageAlgorithme::ImageAlgorithme(cv::Mat* array) : _imageArray(array)
+{
+}
+
+ImageAlgorithme::ImageAlgorithme()
 {
 }
 

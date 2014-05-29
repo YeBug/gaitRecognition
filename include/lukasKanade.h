@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/legacy/legacy.hpp>
 #include "opticalFlowCalculater.h"
 
 class LukasKanade : public OpticalFlowCalculater
@@ -28,7 +29,7 @@ class LukasKanade : public OpticalFlowCalculater
 private:
 
 public:
-	LukasKanade(CvArr* array);
+	LukasKanade(cv::Mat* array);
 	~LukasKanade();
 	virtual void perform();
 };

@@ -18,13 +18,13 @@
 #include <iostream>
 #include "hornSchunck.h"
 
-HornSchunck::HornSchunck(CvArr* array) : OpticalFlowCalculater(array)
+HornSchunck::HornSchunck(cv::Mat* array) : OpticalFlowCalculater(array)
 {
 	_imageArray = array;
 	_windowSize = cvSize(10,10);
 	_usePrevious = false;
 	_lambda = 1;
-	_criteria = cvTermCriteria(CV_TERCRIT_ITER | CV_TERMCRIT_EPS,20,0.30);
+	_criteria = cvTermCriteria(CV_TERMCRIT_ITER | CV_TERMCRIT_EPS,20,0.30);
 }
 
 HornSchunck::~HornSchunck() 
@@ -48,7 +48,7 @@ void HornSchunck::doNotUsePrevious()
 	_usePrevious = false;
 }
 
-void setLambda(double value)
+void HornSchunck::setLambda(double value)
 {
 	_lambda = value;
 }
@@ -61,7 +61,7 @@ void HornSchunck::perform()
 		_usePrevious,
 		&_imageArray[GR_VELX_IMAGE],
 		&_imageArray[GR_VELY_IMAGE],
-		_lambda
+		_lambda,
 		_criteria);
 	usePrevious();
 }

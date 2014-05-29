@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/legacy/legacy.hpp>
 #include "opticalFlowCalculater.h"
 
 class HornSchunck : public OpticalFlowCalculater
@@ -30,7 +31,7 @@ private:
 	double _lambda;
 	CvTermCriteria _criteria;
 public:
-	HornSchunck(CvArr* array);
+	HornSchunck(cv::Mat* array);
 	~HornSchunck();
 	void usePrevious();
 	void doNotUsePrevious();

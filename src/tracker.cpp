@@ -16,56 +16,74 @@
  */
 
 #include <iostream>
-#include "tacker.h"
+#include "tracker.h"
 
 Tracker::Tracker()
 {
-	// exemple provided on openCV book
+	// exemple provided in openCV book
 
 	int cornerCount = GR_CORNER_NUMBER;
 
-	_imageArray = new CvArr[GR_IMAGE_NUMBER];
+	_imageArray = new cv::Mat[GR_IMAGE_NUMBER];
 	_corners = new Corner[GR_CORNER_NUMBER];
 
-	_imageArray[GR_INPUT_IMAGE] = *(cvLoadImage("image0.jpg",CV_LOAD_IMAGE_GRAYSCALE));
-	_imageArray[GR_INPUTB_IMAGE] = *(cvLoadImage("image1.jpg",CV_LOAD_IMAGE_GRAYSCALE));
+	//_imageArray[GR_INPUT_IMAGE] = cv::imread("./data/image0.jpg",CV_LOAD_IMAGE_GRAYSCALE);
+	//_imageArray[GR_INPUTB_IMAGE] = cv::imread("./data/image1.jpg",CV_LOAD_IMAGE_GRAYSCALE);
+	_imageArray[GR_MASK_TRACK_IMAGE] = cv::Mat();
 
-	CvSize pyrSize = CvSize(_imageArray[GR_INPUT_IMAGE].width+8,_imageArray[GR_INPUTB_IMAGE].height/3);
-	
-	_imageArray[GR_PYRA_IMAGE] = *(cvCreateImage(pyrSize,IPL_DEPTH_32F,1));
-	_imageArray[GR_PYRB_IMAGE] = *(cvCreateImage(pyrSize,IPL_DEPTH_32F,1));
+	_cornerFinder = new CornerFinder(_imageArray,_corners,cornerCount);
+	_cornerPrecizer = new CornerPrecizer(_imageArray,_corners);
+	_lukasKanade =  new LukasKanade(_imageArray);
+	_pyrLK = new PyrLukasKanade(_imageArray,_corners,cornerCount);
+	_hornSchunck = new HornSchunck(_imageArray);
 
-	CvSize 	imageSize = cvGetSize(&_imageArray[GR_INPUT_IMAGE]);
-
-	_imageArray[GR_EIGEN_VALUE_IMAGE] = *(cvCreateImage(imageSize,IPL_DEPTH_32F,1));
-	_imageArray[GR_TEMP_IMAGE] = *(cvCreateImage(imageSize,IPL_DEPTH_32F,1));
-
-
-	_algos.push_back(new CornerFinder(_imageArray,&_corners,cornerCount));
-	_algos.push_back(new CornerPrecizer(_imageArray,&_corners,cornerCount));
-	_algos.push_back(new LukasKanade(_imageArray));
-	_algos.push_back(new PyrLukasKanade(_imageArray,&_corners,cornerCount));
-	_algos.push_back(new HornSchunck(_imageArray));
+	_init = true;
 
 }
 
 Tracker::~Tracker() 
 {
-	delete _imageArray;
-	delete _corners;
-	delete _algos;
 }
 
 void Tracker::runAlgos()
 {
-	_algos[GR_CORNER_FINDER]->perform();
-	_algos[GR_CORNER_PRECIZER]->perform();
-	_algos[GR_OPTICAL_FLOW_PYR_LK]->perform();
+ 	int r = 4;
+ 	if ( _init ) 
+ 	{
+ 		_cornerFinder->perform();
+		_cornerPrecizer->perform();
+		_init = false;
+	}
+	_pyrLK->perform();
+	_outCorners = _pyrLK->getOutCorners();
 
-	_outCorners = _algos[GR_OPTICAL_FLOW_PYR_LK]->getOutCorner();
+	std::cout<<"** Number of corners detected: "<<_corners->size()<<std::endl;
+
+  	for( size_t i = 0; i < _corners->size(); i++ )
+    { 
+    	//cv::circle( _imageArray[GR_INPUT_IMAGE], (*_corners)[i], r, cv::Scalar(128,128,128), -1, 8, 0 );
+    	cv::line( _imageArray[GR_INPUT_IMAGE], (*_corners)[i],(*_outCorners)[i],cv::Scalar(128,128,128),1,1,0);
+    }
+
+	cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
+    cv::imshow( "Display window", _imageArray[GR_INPUT_IMAGE] ); 
+
+    _corners = _outCorners;
+
+	
 }
 
-GaitPrint Tracker::computeGaitPrint()
+void Tracker::setInputImage1(cv::Mat img)
 {
+	_imageArray[GR_INPUT_IMAGE] = cv::Mat(img);
+}
 
+void Tracker::setInputImage2(cv::Mat img)
+{
+	_imageArray[GR_INPUTB_IMAGE] = cv::Mat(img);
+}
+
+void Tracker::reInit()
+{
+	_init = true;
 }
