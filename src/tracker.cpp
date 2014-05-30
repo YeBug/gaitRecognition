@@ -47,7 +47,7 @@ Tracker::~Tracker()
 
 void Tracker::runAlgos()
 {
- 	int r = 4;
+ 	int color;
  	if ( _init ) 
  	{
  		_cornerFinder->perform();
@@ -57,16 +57,38 @@ void Tracker::runAlgos()
 	_pyrLK->perform();
 	_outCorners = _pyrLK->getOutCorners();
 
-	std::cout<<"** Number of corners detected: "<<_corners->size()<<std::endl;
+
+	cvtColor(_imageArray[GR_INPUT_IMAGE], _imageArray[GR_INPUT_IMAGE], CV_GRAY2RGB);
 
   	for( size_t i = 0; i < _corners->size(); i++ )
     { 
-    	//cv::circle( _imageArray[GR_INPUT_IMAGE], (*_corners)[i], r, cv::Scalar(128,128,128), -1, 8, 0 );
+    	color = (((*_corners)[i].x - (*_outCorners)[i].x)*255/_imageArray[GR_OUTPUT_IMAGE].size().width + ((*_corners)[i].y - (*_outCorners)[i].y)*255/_imageArray[GR_OUTPUT_IMAGE].size().height)/2 ;
+    	//std::cout<<"Color found : "<<color<<std::endl;
+    	if ( color < 0 ) 
+    	{
+    		color = -color;
+    	}
+    	if ( color > 0 && color < 85 )
+    	{
+ 			cv::circle( _imageArray[GR_OUTPUT_IMAGE], (*_corners)[i], 1, cv::Scalar(color,0,0), -1, 8, 0 );
+    	}
+    	else if ( color > 85 && color < 170 )
+    	{
+ 			cv::circle( _imageArray[GR_OUTPUT_IMAGE], (*_corners)[i], 1, cv::Scalar(0,color,color), -1, 8, 0 );
+    	}
+    	else 
+    	{
+ 			cv::circle( _imageArray[GR_OUTPUT_IMAGE], (*_corners)[i], 1, cv::Scalar(0,0,color), -1, 8, 0 );
+    	}
+    	//cv::circle( _imageArray[GR_INPUT_IMAGE], (*_corners)[i], 2, cv::Scalar(128,128,128), -1, 8, 0 );
     	cv::line( _imageArray[GR_INPUT_IMAGE], (*_corners)[i],(*_outCorners)[i],cv::Scalar(128,128,128),1,1,0);
+
     }
 
 	cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
     cv::imshow( "Display window", _imageArray[GR_INPUT_IMAGE] ); 
+    cv::namedWindow( "HeatMap", cv::WINDOW_AUTOSIZE );// Create a window for display.
+    cv::imshow( "HeatMap", _imageArray[GR_OUTPUT_IMAGE] ); 
 
     _corners = _outCorners;
 
@@ -81,6 +103,11 @@ void Tracker::setInputImage1(cv::Mat img)
 void Tracker::setInputImage2(cv::Mat img)
 {
 	_imageArray[GR_INPUTB_IMAGE] = cv::Mat(img);
+}
+
+void Tracker::setHeatMapImage(cv::Mat img)
+{
+	_imageArray[GR_OUTPUT_IMAGE] = cv::Mat(img);
 }
 
 void Tracker::reInit()

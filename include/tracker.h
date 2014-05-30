@@ -53,6 +53,7 @@ public:
 	~Tracker();
 	void runAlgos();
 	void reInit();
+	void setHeatMapImage(cv::Mat img);
 	void setInputImage1(cv::Mat img);
 	void setInputImage2(cv::Mat img);
 //	GaitPrint computeGaitPrint();

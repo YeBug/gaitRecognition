@@ -18,12 +18,12 @@
 #include <iostream>
 #include "tracker.h"
 
-#define FRAME_REINIT 10
+#define FRAME_REINIT 100
 
 int main(void)
 {
 	Tracker tracker;
-	cv::VideoCapture cap("./data/video1.avi");
+	cv::VideoCapture cap(0);
 	if(!cap.isOpened())
 	{
 		return -1;
@@ -39,6 +39,9 @@ int main(void)
 			cv::GaussianBlur(frame, frame, cv::Size(7,7), 1.5, 1.5);
 
 			tracker.setInputImage1(frame);
+
+		    tracker.setHeatMapImage(*(new cv::Mat(frame.size(),CV_32FC3)));
+
 		}
 
 		if( i%FRAME_REINIT == 0 ) 
