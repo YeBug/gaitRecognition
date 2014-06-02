@@ -48,6 +48,7 @@ Tracker::~Tracker()
 void Tracker::runAlgos()
 {
  	int color;
+ 	cv::Mat tmp,alpha,dst;
  	if ( _init ) 
  	{
  		_cornerFinder->perform();
@@ -58,7 +59,9 @@ void Tracker::runAlgos()
 	_outCorners = _pyrLK->getOutCorners();
 
 
-	cvtColor(_imageArray[GR_INPUT_IMAGE], _imageArray[GR_INPUT_IMAGE], CV_GRAY2RGB);
+
+	
+	cvtColor(_imageArray[GR_INPUT_IMAGE], _imageArray[GR_INPUT_IMAGE], CV_GRAY2BGR);
 
   	for( size_t i = 0; i < _corners->size(); i++ )
     { 
@@ -68,15 +71,15 @@ void Tracker::runAlgos()
     	{
     		color = -color;
     	}
-    	if ( color > 0 && color < 85 )
+    	if ( color > 45 && color < 85 )
     	{
- 			cv::circle( _imageArray[GR_OUTPUT_IMAGE], (*_corners)[i], 1, cv::Scalar(color,0,0), -1, 8, 0 );
+ 			cv::circle( _imageArray[GR_OUTPUT_IMAGE], (*_corners)[i], 1, cv::Scalar(85,0,0), -1, 8, 0 );
     	}
     	else if ( color > 85 && color < 170 )
     	{
  			cv::circle( _imageArray[GR_OUTPUT_IMAGE], (*_corners)[i], 1, cv::Scalar(0,color,color), -1, 8, 0 );
     	}
-    	else 
+    	else  if ( color > 170 && color < 255 )
     	{
  			cv::circle( _imageArray[GR_OUTPUT_IMAGE], (*_corners)[i], 1, cv::Scalar(0,0,color), -1, 8, 0 );
     	}
@@ -84,13 +87,43 @@ void Tracker::runAlgos()
     	cv::line( _imageArray[GR_INPUT_IMAGE], (*_corners)[i],(*_outCorners)[i],cv::Scalar(128,128,128),1,1,0);
 
     }
+	cvtColor(_imageArray[GR_OUTPUT_IMAGE],tmp,CV_BGR2GRAY);
+	cv::threshold(tmp,alpha,100,255,cv::THRESH_BINARY);
+	cv::Mat rgb[3];
+	cv::split(_imageArray[GR_OUTPUT_IMAGE],rgb);
+	cv::Mat rgba[4]={rgb[0],rgb[1],rgb[2],alpha};
+	cv::merge(rgba,4,dst);
 
-	cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
+	/*for (int i = 0 ;i < _imageArray[GR_OUTPUT_IMAGE].size().width;i++ ) 
+	{
+		for (int j =0; j< _imageArray[GR_OUTPUT_IMAGE].size().height;j++ )
+		{
+			if ( _imageArray[GR_OUTPUT_IMAGE].at<cv::Vec3b>(i,j) != *(new cv::Vec3b(0,0,0)))
+			{
+				_imageArray[GR_INPUT_IMAGE].at<cv::Vec3b>(i,j) = *(new cv::Vec3b(_imageArray[GR_OUTPUT_IMAGE].at<cv::Vec3b>(i,j)));
+			}
+		}
+	}*/
+   	//_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE] = *(new cv::Mat(_imageArray[GR_OUTPUT_IMAGE].size(),8,1));
+	//cv::inRange(_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE], cv::Scalar(125.0, 0.0, 0.0), cv::Scalar(255.0 + 1.0, 130.0, 130.0), _imageArray[GR_MASK_OPTICAL_FLOW_IMAGE]);
+	//cv::bitwise_not(_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE],_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE]);
+	//_imageArray[GR_OUTPUT_IMAGE].copyTo(_imageArray[GR_INPUT_IMAGE],_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE]);
+	//cv::applyColorMap(_imageArray[GR_OUTPUT_IMAGE], _imageArray[GR_INPUT_IMAGE], cv::COLORMAP_AUTUMN);
+
+	/*cv::cvtColor(_imageArray[GR_OUTPUT_IMAGE],_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE] ,CV_BGR2GRAY);
+	cv::threshold(_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE],_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE],10,1,cv::THRESH_BINARY_INV);
+	_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE].reshape(3);
+
+	_imageArray[GR_INPUT_IMAGE].mul(_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE]);
+	//_imageArray[GR_OUTPUT_IMAGE].copyTo(_imageArray[GR_INPUT_IMAGE],_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE]);
+	*/
+
+	cv::imwrite("dst.png",_imageArray[GR_INPUT_IMAGE]);
+	/*cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
     cv::imshow( "Display window", _imageArray[GR_INPUT_IMAGE] ); 
     cv::namedWindow( "HeatMap", cv::WINDOW_AUTOSIZE );// Create a window for display.
-    cv::imshow( "HeatMap", _imageArray[GR_OUTPUT_IMAGE] ); 
+    cv::imshow( "HeatMap", _imageArray[GR_OUTPUT_IMAGE] ); */
 
-    _corners = _outCorners;
 
 	
 }
@@ -107,10 +140,30 @@ void Tracker::setInputImage2(cv::Mat img)
 
 void Tracker::setHeatMapImage(cv::Mat img)
 {
-	_imageArray[GR_OUTPUT_IMAGE] = cv::Mat(img);
+	_imageArray[GR_OUTPUT_IMAGE] = cv::Mat(img.size(),CV_8UC4,cv::Scalar(0,0,0));
 }
 
 void Tracker::reInit()
 {
 	_init = true;
+}
+
+cv::Mat* Tracker::getOutputFrame()
+{
+	return new cv::Mat(_imageArray[GR_INPUT_IMAGE]);
+}
+
+Corner* Tracker::getCorners()
+{
+	return _corners;
+}
+
+Corner* Tracker::getOutCorners()
+{
+	return _outCorners;
+}
+
+void Tracker::reallocCorners()
+{	
+    _corners = _outCorners;
 }

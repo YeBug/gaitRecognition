@@ -20,6 +20,8 @@
 
 #include <iostream>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/contrib/contrib.hpp>
+#include <opencv2/core/core.hpp>
 #include <vector>
 #include "algorithmeEnum.h"
 #include "imageAlgorithme.h"
@@ -56,6 +58,10 @@ public:
 	void setHeatMapImage(cv::Mat img);
 	void setInputImage1(cv::Mat img);
 	void setInputImage2(cv::Mat img);
+	cv::Mat* getOutputFrame();
+	Corner* getCorners();
+	Corner* getOutCorners();
+	void 	reallocCorners();
 //	GaitPrint computeGaitPrint();
 };
 #endif
