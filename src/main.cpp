@@ -104,12 +104,11 @@ int main(void)
     		{
  				cv::circle( videoFrame, corners[i], 1, cv::Scalar(0,0,color), -1, 8, 0 );
     		}
-    		cv::line( videoFrame, corners[i],outCorners[i],cv::Scalar(128,128,128),1,1,0);
    		}
-   		/*for( size_t i = 0; i<tracker.getCorners()->size();i++)
+   		for( size_t i = 0; i<tracker.getCorners()->size();i++)
    		{
    			cv::line( videoFrame, (*tracker.getCorners())[i],(*tracker.getOutCorners())[i],cv::Scalar(128,128,128),1,1,0);
-   		}*/
+   		}
 
 
 		//out << *tracker.getOutputFrame();
