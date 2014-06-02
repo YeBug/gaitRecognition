@@ -43,6 +43,8 @@ public:
 	~PyrLukasKanade();
 	void setCriteria(int type, int max_iter, double epsilon);
 	void setFlags(int flags);
+	void setCount(int value);
+	void setCorner(Corner* value);
 	void setLevel(int value);
 	void setMinEigThreshold(double value);
 	std::vector<float> getTrackError();

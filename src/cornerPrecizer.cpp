@@ -34,6 +34,11 @@ CornerPrecizer::~CornerPrecizer()
 	delete _corners;
 }
 
+void CornerPrecizer::setCorner(Corner* value)
+{
+	_corners = value;
+}
+
 void CornerPrecizer::setCriteria(int type, int max_iter, double epsilon)
 {
 	_criteria = *(new cv::TermCriteria(type,max_iter,epsilon));

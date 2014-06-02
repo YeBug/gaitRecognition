@@ -37,6 +37,12 @@ CornerFinder::~CornerFinder()
 	delete _corners;
 }
 
+void CornerFinder::setCorner(Corner* value)
+{
+	_corners = value;
+}
+
+
 void CornerFinder::setQualityLevel(double value)
 {
 	_qualityLevel = value;

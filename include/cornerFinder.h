@@ -40,6 +40,7 @@ public:
 	void setQualityLevel(double value);
 	void setMinimumDistance(double value);
 	void useHarris();
+	void setCorner(Corner* value);
 	void doNotUseHarris();
 	void applyMask(cv::Mat* mask);
 	void setBlockSize(int value);

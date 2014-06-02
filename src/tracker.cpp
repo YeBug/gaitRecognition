@@ -48,12 +48,18 @@ Tracker::~Tracker()
 void Tracker::runAlgos()
 {
  	int color;
- 	cv::Mat tmp,alpha,dst;
  	if ( _init ) 
  	{
+ 		_corners->clear();
+ 		_cornerFinder->setCorner(_corners);
+ 		_cornerPrecizer->setCorner(_corners);
+ 		_pyrLK->setCorner(_corners);
  		_cornerFinder->perform();
 		_cornerPrecizer->perform();
 		_init = false;
+		_pyrLK->setCount(_corners->size());
+		std::cout<<"Nb corner : "<<_corners->size()<<std::endl;
+		//_outCorners = _corners;
 	}
 	_pyrLK->perform();
 	_outCorners = _pyrLK->getOutCorners();
@@ -87,36 +93,7 @@ void Tracker::runAlgos()
     	cv::line( _imageArray[GR_INPUT_IMAGE], (*_corners)[i],(*_outCorners)[i],cv::Scalar(128,128,128),1,1,0);
 
     }
-	cvtColor(_imageArray[GR_OUTPUT_IMAGE],tmp,CV_BGR2GRAY);
-	cv::threshold(tmp,alpha,100,255,cv::THRESH_BINARY);
-	cv::Mat rgb[3];
-	cv::split(_imageArray[GR_OUTPUT_IMAGE],rgb);
-	cv::Mat rgba[4]={rgb[0],rgb[1],rgb[2],alpha};
-	cv::merge(rgba,4,dst);
-
-	/*for (int i = 0 ;i < _imageArray[GR_OUTPUT_IMAGE].size().width;i++ ) 
-	{
-		for (int j =0; j< _imageArray[GR_OUTPUT_IMAGE].size().height;j++ )
-		{
-			if ( _imageArray[GR_OUTPUT_IMAGE].at<cv::Vec3b>(i,j) != *(new cv::Vec3b(0,0,0)))
-			{
-				_imageArray[GR_INPUT_IMAGE].at<cv::Vec3b>(i,j) = *(new cv::Vec3b(_imageArray[GR_OUTPUT_IMAGE].at<cv::Vec3b>(i,j)));
-			}
-		}
-	}*/
-   	//_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE] = *(new cv::Mat(_imageArray[GR_OUTPUT_IMAGE].size(),8,1));
-	//cv::inRange(_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE], cv::Scalar(125.0, 0.0, 0.0), cv::Scalar(255.0 + 1.0, 130.0, 130.0), _imageArray[GR_MASK_OPTICAL_FLOW_IMAGE]);
-	//cv::bitwise_not(_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE],_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE]);
-	//_imageArray[GR_OUTPUT_IMAGE].copyTo(_imageArray[GR_INPUT_IMAGE],_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE]);
-	//cv::applyColorMap(_imageArray[GR_OUTPUT_IMAGE], _imageArray[GR_INPUT_IMAGE], cv::COLORMAP_AUTUMN);
-
-	/*cv::cvtColor(_imageArray[GR_OUTPUT_IMAGE],_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE] ,CV_BGR2GRAY);
-	cv::threshold(_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE],_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE],10,1,cv::THRESH_BINARY_INV);
-	_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE].reshape(3);
-
-	_imageArray[GR_INPUT_IMAGE].mul(_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE]);
-	//_imageArray[GR_OUTPUT_IMAGE].copyTo(_imageArray[GR_INPUT_IMAGE],_imageArray[GR_MASK_OPTICAL_FLOW_IMAGE]);
-	*/
+	
 
 	cv::imwrite("dst.png",_imageArray[GR_INPUT_IMAGE]);
 	/*cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
@@ -166,4 +143,32 @@ Corner* Tracker::getOutCorners()
 void Tracker::reallocCorners()
 {	
     _corners = _outCorners;
+}
+
+void Tracker::plotField(cv::Mat& image, cv::Point2f x, cv::Point2f y)
+{
+	if( _init) 
+	{
+		return;
+	}
+
+	int color = ((x.x - y.x)*255/image.size().width + (x.y - y.y)*255/image.size().height)/2;
+	//std::cout<<"Color found : "<<color<<std::endl;
+	if ( color < 0 ) 
+	{
+		color = -color;
+	}
+	if ( color > 0 && color < 85 )
+	{
+		cv::line( image,x,y,cv::Scalar(color,color,color,color),1,1,0);
+	}
+	else if ( color > 85 && color < 170 )
+	{
+		cv::line( image,x,y,cv::Scalar(color,color,color,color),1,1,0);
+	}
+	else  if ( color > 170 && color < 255 )
+	{
+		cv::line( image,x,y,cv::Scalar(color,color,color,color),1,1,0);
+	}
+
 }

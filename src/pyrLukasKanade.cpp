@@ -53,6 +53,16 @@ void PyrLukasKanade::setLevel(int value)
 	_level = value;
 }
 
+void PyrLukasKanade::setCount(int value)
+{
+	_count = value;
+}
+
+void PyrLukasKanade::setCorner(Corner* value)
+{
+	_corners = value;
+}
+
 void PyrLukasKanade::setMinEigThreshold(double value)
 {
 	_minEigThreshold = value;

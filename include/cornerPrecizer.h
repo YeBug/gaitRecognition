@@ -35,6 +35,7 @@ private:
 public:
 	CornerPrecizer(cv::Mat* array, Corner* corners);
 	~CornerPrecizer();
+	void setCorner(Corner* value);
 	void setCriteria(int type, int max_iter, double epsilon);
 	void setWindowSize(CvSize value);
 	void setZeroZone(CvSize value);
