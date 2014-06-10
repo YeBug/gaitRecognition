@@ -20,15 +20,15 @@
 
 #define FRAME_REINIT 10
 
-int main(void)
+int main(int argc, char** argv)
 {
 	Tracker tracker;
 	cv::VideoWriter out;
 	cv::Size size;
-	cv::VideoCapture cap("./data/video1.avi");
+	cv::VideoCapture cap(0);
 	Corner corners,outCorners;
 	int color;
-
+	cv::Mat toto;
 
 	if(!cap.isOpened())
 	{
@@ -78,17 +78,17 @@ int main(void)
 
 			tracker.runAlgos();
 
-			corners.insert(corners.end(),tracker.getCorners()->begin(),tracker.getCorners()->end());
-
-			outCorners.insert(outCorners.end(),tracker.getOutCorners()->begin(),tracker.getOutCorners()->end());
-
+			//corners.insert(corners.end(),tracker.getCorners()->begin(),tracker.getCorners()->end());
+			corners = *tracker.getCorners();
+			//outCorners.insert(outCorners.end(),tracker.getOutCorners()->begin(),tracker.getOutCorners()->end());
+			outCorners = *tracker.getOutCorners();
 			tracker.reallocCorners();
 
 			for( size_t i = 0; i < corners.size(); i++ )
-	    	{ 
+	    	{ /*
 	    		color = ((corners[i].x - outCorners[i].x)*255/frame.size().width + (corners[i].y - outCorners[i].y)*255/frame.size().height)/2 ;
 	    		//std::cout<<"Color found : "<<color<<std::endl;
-	    		/*if ( color < 0 ) 
+	    		if ( color < 0 ) 
 	    		{
 	    			color = -color;
 	    		}

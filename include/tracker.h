@@ -31,9 +31,11 @@
 #include "lukasKanade.h"
 #include "pyrLukasKanade.h"
 #include "hornSchunck.h"
+#include "lic.h"
+#include <cmath>
 //#include "gaitPrint.h"
 
-#define GR_IMAGE_NUMBER 12 
+#define GR_IMAGE_NUMBER 14 
 #define GR_CORNER_NUMBER 500
 
 class Tracker
@@ -48,6 +50,7 @@ private:
 	LukasKanade*	_lukasKanade;
 	PyrLukasKanade*	_pyrLK;
 	HornSchunck*	_hornSchunck;
+	LIC*			_lic;
 	bool			_init;
 
 public:

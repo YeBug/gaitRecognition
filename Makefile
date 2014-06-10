@@ -18,29 +18,33 @@ DATADIR = 		./data/
 
 CC = 			g++
 RM =			rm -f
-OPENCVFLAGS =	`pkg-config --cflags opencv`
-OPENCVLIBS = 	`pkg-config --cflags --libs opencv`
+OPENCVFLAGS =		`pkg-config --cflags opencv`
+OPENCVLIBS = 		`pkg-config --cflags --libs opencv`
 CPPFLAGS =		-ggdb $(OPENCVFLAGS) -Wall -Wextra -I$(IDIR)
-CCFLAGS =		-pedantic -ansi -O3
-LIBS =			-L$(LDIR)
+CCFLAGS =		-pedantic -ansi -O3 -g
+LIBS =			-L$(LDIR) -lm -lglut
 AR =			ar
 ARFLAGS =		lrcv
-.PHONY : all clean distclean tarball testOpenCv
+.PHONY : all clean distclean tarball testOpenCv testTexture
 
-all : testOpenCv
+all : testOpenCv 
 
 # Non file target, make it easier to compile a prog
 testOpenCv: $(BDIR)testOpenCv
 
+testTexture : $(BDIR)testTexture
+
 
 # Target to create the real execs, own creation
-$(BDIR)testOpenCv: $(ODIR)algorithmeEnum.o  $(ODIR)corner.o  $(ODIR)cornerFinder.o  $(ODIR)cornerPrecizer.o  $(ODIR)hornSchunck.o $(ODIR)imageAlgorithme.o $(ODIR)imageEnum.o $(ODIR)lukasKanade.o  $(ODIR)main.o $(ODIR)opticalFlowCalculater.o $(ODIR)pyrLukasKanade.o $(ODIR)tracker.o
-	$(CC)  $(CCFLAGS) $(CPPFLAGS) $^ -o $@ $(OPENCVLIBS)
+$(BDIR)testOpenCv: $(ODIR)algorithmeEnum.o  $(ODIR)corner.o  $(ODIR)cornerFinder.o  $(ODIR)cornerPrecizer.o  $(ODIR)hornSchunck.o $(ODIR)imageAlgorithme.o $(ODIR)imageEnum.o $(ODIR)lukasKanade.o  $(ODIR)main.o $(ODIR)opticalFlowCalculater.o $(ODIR)pyrLukasKanade.o $(ODIR)tracker.o $(ODIR)lic.o
+	$(CC)  $(CCFLAGS) $(CPPFLAGS) $^ -o $@ $(OPENCVLIBS) $(LIBS)
+
+
 
 
 # Target to create all objects files
 $(ODIR)%.o: $(SDIR)%.cpp
-	$(CC)  $(CCFLAGS) $(CPPFLAGS) -c $< -o $@ $(OPENCVLIBS)
+	$(CC)  $(CCFLAGS) $(CPPFLAGS) -c $< -o $@ $(OPENCVLIBS) $(LIBS)
 
 
 # Non file target, just to to basis function on all repository
