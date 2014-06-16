@@ -103,8 +103,7 @@ void Tracker::runAlgos()
 	
 
 	cv::imwrite("dst.png",_imageArray[GR_OUTPUT_IMAGE]);
-	cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
-    cv::imshow( "TOTO", _imageArray[GR_OUTPUT_IMAGE] ); 
+
     /*cv::namedWindow( "HeatMap", cv::WINDOW_AUTOSIZE );// Create a window for display.
     cv::imshow( "HeatMap", _imageArray[GR_OUTPUT_IMAGE] ); */
 
@@ -124,7 +123,7 @@ void Tracker::setInputImage2(cv::Mat img)
 
 void Tracker::setHeatMapImage(cv::Mat img)
 {
-	_imageArray[GR_OUTPUT_IMAGE] = cv::Mat(img.size(),CV_8UC4,cv::Scalar(0,0,0));
+	_imageArray[GR_OUTPUT_IMAGE] = cv::Mat(img);
 }
 
 void Tracker::reInit()
@@ -135,6 +134,11 @@ void Tracker::reInit()
 cv::Mat* Tracker::getOutputFrame()
 {
 	return new cv::Mat(_imageArray[GR_INPUT_IMAGE]);
+}
+
+cv::Mat* Tracker::getOverlayFrame()
+{
+	return new cv::Mat(_imageArray[GR_OUTPUT_IMAGE]);
 }
 
 Corner* Tracker::getCorners()

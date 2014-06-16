@@ -60,7 +60,7 @@ int main(int argc, char** argv)
 
 		    tracker.setHeatMapImage(*(new cv::Mat(frame.size(),CV_8UC4)));
 
-		}
+		}https://scontent-a-lhr.xx.fbcdn.net/hphotos-xpa1/t1.0-9/q71/s720x720/1526150_10152278128689457_5340708029920574435_n.jpg
 
 		if( i%FRAME_REINIT == 0 ) 
 		{
@@ -75,6 +75,7 @@ int main(int argc, char** argv)
 			cv::GaussianBlur(frame, frame, cv::Size(7,7), 1.5, 1.5);
 
 			tracker.setInputImage2(frame);
+			//tracker.setHeatMapImage(videoFrame);
 
 			tracker.runAlgos();
 
@@ -113,6 +114,7 @@ int main(int argc, char** argv)
 
 	   		
 			//out << *tracker.getOutputFrame();
+			//tracker.getOverlayFrame()->copyTo(videoFrame);
 			cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
 	    	cv::imshow( "Display window", videoFrame); 
 			

@@ -41,6 +41,7 @@ private:
 	Corner*	_inCorners;
 	Corner*	_outCorners;
 
+	void expandField(int times, int iteration);
 
 public:
 	LIC(cv::Mat* array, Corner* in, Corner* out);
@@ -51,7 +52,7 @@ public:
 	void refillDatas(Corner* in, Corner* out);
 	void genFilter();
 	void perform();
-	void toPPM(unsigned char* img);
+	void toPPM(unsigned char* image);
 };
 
 #endif

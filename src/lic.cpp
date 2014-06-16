@@ -33,8 +33,7 @@ void LIC::allocSize()
 	int size;
 	_width = _imageArray[GR_OUTPUT_IMAGE].size().width;
 	_height = _imageArray[GR_OUTPUT_IMAGE].size().height;
-	std::cout<<_width<<"/"<<_height<<std::endl;
-	size = _width*_height;
+	size = 2*_width*_height;
 	_noise = new char[size];
 	delete _field;
 	_field = new float[size];
@@ -49,21 +48,16 @@ void LIC::genField()
 	float vcMag;
 	float scale;
 
-	for(int i=0;i<_height*_width;i++)
+	for(int i=0;i<2*_height*_width;i++)
 	{
 		_field[i] = 0;
 	}
 
 	for(int i=0;i<_inCorners->size();i++)
 	{
-		double xTmp = (*_inCorners)[i].x - (*_outCorners)[i].x;
-		double yTmp = (*_inCorners)[i].y  - (*_outCorners)[i].y;
-
-		xTmp *= xTmp;
-		yTmp *= yTmp;
-
-		_field[(int)((*_inCorners)[i].y*_width+(*_inCorners)[i].x)] = sqrt(xTmp+yTmp);
+		expandField(10,i);
 	}
+
     for(int	i=0;i<_height;i++)
 	for(int	j=0;j<_width;j++)
     {	
@@ -75,6 +69,47 @@ void LIC::genField()
     }
 }
 
+void LIC::expandField(int times, int interation)
+{
+	double x1,x2,y1,y2;
+
+	int index;
+
+	double c1 = (*_inCorners)[interation].x;
+	double c2 = (*_outCorners)[interation].x;
+	double c3 = (*_inCorners)[interation].y;
+	double c4 = (*_outCorners)[interation].y;
+
+
+
+	for(int i=0;i<times;i++)
+	{
+		x1 = c1 - c2;
+		y1 = c3  - c4;
+
+		x2 = x1*x1;
+		y2 = y1*y1;
+
+		index = (int)(c1*_width+c3);
+
+		if (index > 2*_width*_height-2)
+		{
+			index = 2*_width*_height-2;
+		}
+		if ( index < 0 )
+		{
+			break;
+		}
+
+		_field[index] = sqrt(x2+y2);
+		_field[index+1] = sqrt(x2+y2);
+
+		c1 += x1;
+		c2 += y1;
+		c3 += x1;
+		c4 += y1;
+	}
+}
 
 ///		make white noise as the LIC input texture     ///
 void LIC::genNoiseInput()
@@ -104,157 +139,151 @@ void LIC::refillDatas(Corner* in, Corner* out)
 	genField();
 }
 
-///		flow imaging (visualization) through Line Integral Convolution     ///
 void LIC::perform()
-{	
-	int		vec_id;						///ID in the VECtor buffer (for the input flow field)
-	int		advDir;						///ADVection DIRection (0: positive;  1: negative)
-	int		advcts;						///number of ADVeCTion stepS per direction (a step counter)
-	int		ADVCTS = int(_filterKernelLenght * 3);	///MAXIMUM number of advection steps per direction to break dead loops	
-	
-	float	vctr_x;						///x-component  of the VeCToR at the forefront point
-	float	vctr_y;						///y-component  of the VeCToR at the forefront point
-	float	clp0_x;						///x-coordinate of CLiP point 0 (current)
-	float	clp0_y;						///y-coordinate of CLiP point 0	(current)
-	float	clp1_x;						///x-coordinate of CLiP point 1 (next   )
-	float	clp1_y;						///y-coordinate of CLiP point 1 (next   )
-	float	samp_x;						///x-coordinate of the SAMPle in the current pixel
-	float	samp_y;						///y-coordinate of the SAMPle in the current pixel
-	float	tmpLen;						///TeMPorary LENgth of a trial clipped-segment
-	float	segLen;						///SEGment   LENgth
-	float	curLen;						///CURrent   LENgth of the streamline
-	float	prvLen;						///PReVious  LENgth of the streamline		
-	float	W_ACUM;						///ACcuMulated Weight from the seed to the current streamline forefront
-	float	texVal;						///TEXture VALue
-	float	smpWgt;						///WeiGhT of the current SaMPle
-	float	t_acum[2];					///two ACcUMulated composite Textures for the two directions, perspectively
-	float	w_acum[2];					///two ACcUMulated Weighting values   for the two directions, perspectively
-	float*	wgtLUT = NULL;				///WeiGhT Look Up Table pointing to the target filter LUT
-	float	len2ID = (_filterSize - 1) / _filterKernelLenght;	///map a curve LENgth TO an ID in the LUT
-	unsigned char*	imageToPPM = new unsigned char[_height*_width];
+{	 
+	int fieldId;
+	int advectionDir;
+	int advectionNb;
+	int maxAdvection = _filterKernelLenght *3;
+	float fieldX;
+	float fieldY;
+	float clip0X;
+	float clip0Y;
+	float clip1X;
+	float clip1Y;
+	float sampleX;
+	float sampleY;
+	float tmpLength;
+	float segmentLength;
+	float currentLength;
+	float previousLength;
+	float weightAcc;
+	float textureValue;
+	float sampleWeight;
+	float compositeAccum[2];
+	float weightAccum[2];
+	float* weightTable;
+	float lengthToId = (_filterSize-1)/_filterKernelLenght;
+	unsigned char img[2*_height*_width];
 
-	///for each pixel in the 2D output LIC image///
-	for(int  j = 0;	 j < _height;  j ++)
-	for(int  i = 0;	 i < _width;  i ++)
-	{	
-		///init the composite texture accumulators and the weight accumulators///
-		t_acum[0] = t_acum[1] = w_acum[0] = w_acum[1] = 0.0f;
-	
-		///for either advection direction///
-    	for(advDir = 0;  advDir < 2;  advDir ++)
-    	{	
-			///init the step counter, curve-length measurer, and streamline seed///
-			advcts = 0;
-			curLen = 0.0f;
-        	clp0_x = i + 0.5f;
-			clp0_y = j + 0.5f;
+	for(int i=0;i<_height*_width;i++)
+	{
+		img[i] = 0;
+	}
 
-			///access the target filter LUT///
-			wgtLUT = (advDir == 0) ? _0LevelFilter : _1LevelFilter;
+    for(int	i=0;i<_height;i++)
+	for(int	j=0;j<_width;j++)
+	{
+		for(advectionDir=0;advectionDir<2;advectionDir++)
+		{
+			compositeAccum[0] = compositeAccum[1] = weightAccum[0] = weightAccum[1] = 0.0f;
 
-			///until the streamline is advected long enough or a tightly  spiralling center / focus is encountered///
-        	while( curLen < _filterKernelLenght && advcts < ADVCTS ) 
-         	{
-				///access the vector at the sample///
-				vec_id = ( int(clp0_y) * _width + int(clp0_x) ) << 1;
-				vctr_x = _field[vec_id    ];
-				vctr_y = _field[vec_id + 1];
+			advectionNb = 0;
+			currentLength =0;
+			clip0X = j+0.5;
+			clip0Y = i+0.5;
 
-				///in case of a critical point///
-				if( vctr_x == 0.0f && vctr_y == 0.0f )
-				{	
-					t_acum[advDir] = (advcts == 0) ? 0.0f : t_acum[advDir];		   ///this line is indeed unnecessary
-					w_acum[advDir] = (advcts == 0) ? 1.0f : w_acum[advDir];
+
+			if ( advectionDir == 0)
+			{
+				weightTable = _0LevelFilter;
+			}
+			else
+			{
+				weightTable = _1LevelFilter;
+			}
+
+			while( currentLength < _filterKernelLenght && advectionNb < maxAdvection)
+			{
+				fieldId = ((int)clip0Y*_width+(int)clip0X) << 1;
+				if (fieldId > 2*_width*_height-2)
+				{
+					fieldId = 2*_width*_height-2;
+				}	
+				fieldX = _field[fieldId];
+				fieldY = _field[fieldId+1];
+
+				if (fieldX==0 && fieldY == 0)
+				{
+					compositeAccum[advectionDir] = (advectionNb==0)?0:compositeAccum[advectionDir];
+					weightAccum[advectionDir] = (advectionNb==0)?1:weightAccum[advectionDir];
 					break;
 				}
-				
-				///negate the vector for the backward-advection case///
-				vctr_x = (advDir == 0) ? vctr_x : -vctr_x;
-				vctr_y = (advDir == 0) ? vctr_y : -vctr_y;
 
-				///clip the segment against the pixel boundaries --- find the shorter from the two clipped segments///
-				///replace  all  if-statements  whenever  possible  as  they  might  affect the computational speed///
-				segLen = _lineClipMax;
-				segLen = (vctr_x < -_vecMin) ? ( int(     clp0_x         ) - clp0_x ) / vctr_x : segLen;
-				segLen = (vctr_x >  _vecMin) ? ( int( int(clp0_x) + 1.5f ) - clp0_x ) / vctr_x : segLen;
-				segLen = (vctr_y < -_vecMin) ?	
-						 (      (    (  tmpLen = ( int(     clp0_y)          - clp0_y ) / vctr_y  )  <  segLen    ) ? tmpLen : segLen      ) 
-						: segLen;
-				segLen = (vctr_y >  _vecMin) ?
-						 (      (    (  tmpLen = ( int( int(clp0_y) + 1.5f ) - clp0_y ) / vctr_y  )  <  segLen    ) ? tmpLen : segLen      ) 
-						: segLen;
-				
-				///update the curve-length measurers///
-				prvLen = curLen;
-				curLen+= segLen;
-				segLen+= 0.0004f;
-		   
-				///check if the filter has reached either end///
-				segLen = (curLen > _filterKernelLenght) ? ( (curLen = _filterKernelLenght) - prvLen ) : segLen;
+				if ( advectionDir == 0)
+				{
+					fieldX = -fieldX;
+					fieldY = -fieldY;
+				}
 
-				///obtain the next clip point///
-				clp1_x = clp0_x + vctr_x * segLen;
-				clp1_y = clp0_y + vctr_y * segLen;
+				segmentLength = _lineClipMax;
+				segmentLength = (fieldX < -_vecMin) ? ( int(     clip0X         ) - clip0X ) / fieldX : segmentLength;
+				segmentLength = (fieldX >  _vecMin) ? ( int( int(clip0X) + 1.5f ) - clip0X ) / fieldX : segmentLength;
+				segmentLength = (fieldY < -_vecMin) ?	(((  tmpLength = ( int(clip0Y)- clip0Y ) / fieldY  )  <  segmentLength) ? tmpLength : segmentLength): segmentLength;
+				segmentLength = (fieldY >  _vecMin) ?(((tmpLength = ( int( int(clip0Y) + 1.5f ) - clip0Y ) / fieldY)<segmentLength) ? tmpLength : segmentLength): segmentLength;
 
-				///obtain the middle point of the segment as the texture-contributing sample///
-				samp_x = (clp0_x + clp1_x) * 0.5f;
-				samp_y = (clp0_y + clp1_y) * 0.5f;
+				previousLength = currentLength;
+				currentLength += segmentLength;
+				segmentLength += 0.0004;
 
-				///obtain the texture value of the sample///
-				texVal = _noise[ int(samp_y) * _width + int(samp_x) ];
+				segmentLength = (currentLength>_filterKernelLenght)?(_filterKernelLenght-previousLength):segmentLength;
+				currentLength = _filterKernelLenght;
 
-				///update the accumulated weight and the accumulated composite texture (texture x weight)///
-				W_ACUM = wgtLUT[ int(curLen * len2ID) ];
-				smpWgt = W_ACUM - w_acum[advDir];			
-				w_acum[advDir]  = W_ACUM;								
-				t_acum[advDir] += texVal * smpWgt;
-			
-				///update the step counter and the "current" clip point///
-				advcts ++;
-				clp0_x = clp1_x;
-				clp0_y = clp1_y;
+				clip1X = clip0X + fieldX*segmentLength;
+				clip1Y = clip0Y + fieldY*segmentLength;
 
-				///check if the streamline has gone beyond the flow field///
-				if( clp0_x < 0.0f || clp0_x >= _width || clp0_y < 0.0f || clp0_y >= _height)  break;
-			}	
-     	}
+				sampleX = (clip0X+clip1X)/2.0;
+				sampleY = (clip0Y+clip1Y)/2.0;
 
-		///normalize the accumulated composite texture///
-     	texVal = (t_acum[0] + t_acum[1]) / (w_acum[0] + w_acum[1]);
+				textureValue = _noise[(int)sampleY*_width+(int)sampleX];
 
-		///clamp the texture value against the displayable intensity range [0, 255]
-		texVal = (texVal <   0.0f) ?   0.0f : texVal;
-		texVal = (texVal > 255.0f) ? 255.0f : texVal; 
-		imageToPPM[j * _width + i] = (unsigned char) texVal;// ouput frame
-		_imageArray[GR_OUTPUT_IMAGE].at<cv::Vec3b>(j,i) = *(new cv::Vec3b(texVal,texVal,texVal));
-		if ( texVal != 0)
-		{
-			std::cout<<"Val:"<<texVal<<std::endl;
-		} 	
+				weightAcc = weightTable[(int)(currentLength*lengthToId)];
+				sampleWeight = weightAcc - weightAccum[advectionDir];
+				weightAccum[advectionDir] = weightAcc;
+				compositeAccum[advectionDir] += textureValue*sampleWeight;
+
+				advectionNb++;
+				clip0X = clip1X;
+				clip0Y = clip1Y;			
+
+
+				if( clip0X < 0 || clip0X >= _width || clip0Y < 0 || clip0Y >= _height)
+				{
+					break;
+				}
+			}
+		}
+
+		textureValue = (compositeAccum[0]+compositeAccum[1])/(weightAccum[0]+weightAccum[1]);
+		textureValue = (textureValue < 0)?0:textureValue;
+		textureValue = (textureValue>255)?255:textureValue;
+
+		img[i*_width+j] = (unsigned char)textureValue;
+		// rajouter _imageArray
 	}
-	toPPM(imageToPPM);
-	cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
-    cv::imshow( "TOTO", _imageArray[GR_OUTPUT_IMAGE] ); 
+		toPPM(img);
 }
 
-void LIC::toPPM(unsigned char*  pImage)
+void LIC::toPPM(unsigned char*  image)
 {	
-		FILE*	o_file;
-		if(   ( o_file = fopen("./dest.ppm", "w") )  ==  NULL   )  
-		{  
-			printf("Can't open output file\n");  
-			return;  
-		}
+	FILE*	o_file;
+	if(   ( o_file = fopen("./dest.ppm", "w") )  ==  NULL   )  
+	{  
+		printf("Can't open output file\n");  
+		return;  
+	}
 
-  		fprintf(o_file, "P6\n%d %d\n255\n", _width, _height);
+	fprintf(o_file, "P6\n%d %d\n255\n", _width, _height);
 
-  		for(int  j = 0;  j < _height;  j ++)
-   		for(int  i = 0;  i < _width;  i ++)
+	for(int  j = 0;  j < _height;  j ++) 
+	{
+		for(int  i = 0;  i < _width;  i ++)
 		{
-			unsigned  char	unchar = pImage[j * _width + i];
-      		fprintf(o_file, "%c%c%c", unchar, unchar, unchar);
+			unsigned  char	unchar = image[j * _width + i];
+  			fprintf(o_file, "%c%c%c", unchar, unchar, unchar);
 		}
-
-  		fclose (o_file);	o_file = NULL;
+	}
+	
+	fclose (o_file);	o_file = NULL;
 }
 
