@@ -55,7 +55,7 @@ void LIC::genField()
 
 	for(int i=0;i<_inCorners->size();i++)
 	{
-		expandField(10,i);
+		expandField(5,i);
 	}
 
     for(int	i=0;i<_height;i++)

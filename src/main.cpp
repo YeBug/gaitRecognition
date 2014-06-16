@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 	Tracker tracker;
 	cv::VideoWriter out;
 	cv::Size size;
-	cv::VideoCapture cap(0);
+	cv::VideoCapture cap("./data/video1.avi");
 	Corner corners,outCorners;
 	int color;
 	cv::Mat toto;
