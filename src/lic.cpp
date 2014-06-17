@@ -46,7 +46,7 @@ void LIC::genField()
 {	
 	int index;
 	float vcMag;
-	float scale;
+	float scale;for(int	i=0;i<_height;i++)
 
 	for(int i=0;i<2*_height*_width;i++)
 	{
@@ -55,18 +55,18 @@ void LIC::genField()
 
 	for(int i=0;i<_inCorners->size();i++)
 	{
-		expandField(5,i);
+		expandField(1,i);
 	}
 
-    for(int	i=0;i<_height;i++)
+	for(int	i=0;i<_height;i++)
 	for(int	j=0;j<_width;j++)
-    {	
+	{	
 		index = (i*_width+j)<<1;
-       	vcMag = float(sqrt(double(_field[index]*_field[index]+_field[index+1]*_field[index+1])));
+		vcMag = float(sqrt(double(_field[index]*_field[index]+_field[index+1]*_field[index+1])));
 		scale = (vcMag==0.0f)?0.0f:1.0f/vcMag;
 		_field[index] *= scale;
-        _field[index+1] *= scale;
-    }
+		_field[index+1] *= scale;
+	}
 }
 
 void LIC::expandField(int times, int interation)
@@ -90,7 +90,7 @@ void LIC::expandField(int times, int interation)
 		x2 = x1*x1;
 		y2 = y1*y1;
 
-		index = (int)(c1*_width+c3);
+		index = (int)(c2*_width+c4);
 
 		if (index > 2*_width*_height-2)
 		{
@@ -114,13 +114,13 @@ void LIC::expandField(int times, int interation)
 ///		make white noise as the LIC input texture     ///
 void LIC::genNoiseInput()
 {		
-    for(int	i=0;i<_height;i++)
+	for(int	i=0;i<_height;i++)
 	for(int	j=0;j<_width;j++)
-    {	
+	{	
 		int r = rand();
 		r = ((r & 0xff)+((r&0xff00)>>8))&0xff;
-        _noise[i*_width+j] =(char)(unsigned char)r;
-    }
+		_noise[i*_width+j] =(char)(unsigned char)r;
+	}
 }
 
 void LIC::genFilter()
@@ -171,7 +171,7 @@ void LIC::perform()
 		img[i] = 0;
 	}
 
-    for(int	i=0;i<_height;i++)
+	for(int	i=0;i<_height;i++)
 	for(int	j=0;j<_width;j++)
 	{
 		for(advectionDir=0;advectionDir<2;advectionDir++)
@@ -259,9 +259,22 @@ void LIC::perform()
 		textureValue = (textureValue>255)?255:textureValue;
 
 		img[i*_width+j] = (unsigned char)textureValue;
-		// rajouter _imageArray
+		// rajouter _imageArrayif ( color < 0 ) 
+		
+		if ( textureValue > 0 && textureValue < 85 )
+		{
+			cv::circle( _imageArray[GR_OUTPUT_IMAGE], cv::Point(j,i), 1, cv::Scalar(textureValue,textureValue,textureValue), -1, 8, 0 );
+		}
+		else if ( textureValue > 85 && textureValue < 170 )
+		{
+			cv::circle( _imageArray[GR_OUTPUT_IMAGE], cv::Point(j,i), 1, cv::Scalar(textureValue,textureValue,textureValue), -1, 8, 0 );
+		}
+		else  if ( textureValue > 170 && textureValue < 255 )
+		{
+			cv::circle( _imageArray[GR_OUTPUT_IMAGE], cv::Point(j,i), 1, cv::Scalar(textureValue,textureValue,textureValue), -1, 8, 0 );
+		}			
 	}
-		toPPM(img);
+	toPPM(img);
 }
 
 void LIC::toPPM(unsigned char*  image)
@@ -280,7 +293,7 @@ void LIC::toPPM(unsigned char*  image)
 		for(int  i = 0;  i < _width;  i ++)
 		{
 			unsigned  char	unchar = image[j * _width + i];
-  			fprintf(o_file, "%c%c%c", unchar, unchar, unchar);
+			fprintf(o_file, "%c%c%c", unchar, unchar, unchar);
 		}
 	}
 	

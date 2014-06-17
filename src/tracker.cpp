@@ -49,9 +49,11 @@ Tracker::~Tracker()
 void Tracker::runAlgos()
 {
  	int color;
+ 	//_imageArray[GR_OUTPUT_IMAGE] = *(new cv::Mat(_imageArray[GR_INPUT_IMAGE].size(),CV_8UC4));
+
  	if ( _init ) 
  	{	
- 		_imageArray[GR_OUTPUT_IMAGE] = *(new cv::Mat(_imageArray[GR_INPUT_IMAGE].size(),CV_8UC4));
+ 		//_imageArray[GR_OUTPUT_IMAGE] = *(new cv::Mat(_imageArray[GR_INPUT_IMAGE].size(),CV_8UC4));
 		_lic->allocSize();
 		_corners->clear();
  		_cornerFinder->setCorner(_corners);
@@ -104,10 +106,8 @@ void Tracker::runAlgos()
 
 	cv::imwrite("dst.png",_imageArray[GR_OUTPUT_IMAGE]);
 
-    /*cv::namedWindow( "HeatMap", cv::WINDOW_AUTOSIZE );// Create a window for display.
-    cv::imshow( "HeatMap", _imageArray[GR_OUTPUT_IMAGE] ); */
-
-
+    cv::namedWindow( "HeatMap", cv::WINDOW_AUTOSIZE );// Create a window for display.
+    cv::imshow( "HeatMap", _imageArray[GR_OUTPUT_IMAGE] ); 
 	
 }
 

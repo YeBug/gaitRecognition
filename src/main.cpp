@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 	Tracker tracker;
 	cv::VideoWriter out;
 	cv::Size size;
-	cv::VideoCapture cap("./data/video1.avi");
+	cv::VideoCapture cap(0);
 	Corner corners,outCorners;
 	int color;
 	cv::Mat toto;
@@ -75,7 +75,7 @@ int main(int argc, char** argv)
 			cv::GaussianBlur(frame, frame, cv::Size(7,7), 1.5, 1.5);
 
 			tracker.setInputImage2(frame);
-			//tracker.setHeatMapImage(videoFrame);
+			tracker.setHeatMapImage(videoFrame);
 
 			tracker.runAlgos();
 
@@ -117,7 +117,7 @@ int main(int argc, char** argv)
 			//tracker.getOverlayFrame()->copyTo(videoFrame);
 			cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
 	    	cv::imshow( "Display window", videoFrame); 
-			
+	    	
 	    	out.write(videoFrame);
 
 			tracker.setInputImage1(frame);
