@@ -24,5 +24,6 @@
 #include <opencv2/highgui/highgui.hpp>
 
 typedef std::vector<cv::Point2f> Corner;
+typedef std::vector<cv::KeyPoint> KeyPoint;
 
 #endif

@@ -111,7 +111,6 @@ void LIC::expandField(int times, int interation)
 	}
 }
 
-///		make white noise as the LIC input texture     ///
 void LIC::genNoiseInput()
 {		
 	for(int	i=0;i<_height;i++)
@@ -259,19 +258,18 @@ void LIC::perform()
 		textureValue = (textureValue>255)?255:textureValue;
 
 		img[i*_width+j] = (unsigned char)textureValue;
-		// rajouter _imageArrayif ( color < 0 ) 
 		
 		if ( textureValue > 0 && textureValue < 85 )
 		{
-			cv::circle( _imageArray[GR_OUTPUT_IMAGE], cv::Point(j,i), 1, cv::Scalar(textureValue,textureValue,textureValue), -1, 8, 0 );
+			cv::circle( _imageArray[GR_OUTPUT_IMAGE], cv::Point(j,i), 1, cv::Scalar(0,textureValue,textureValue), -1, 8, 0 );
 		}
 		else if ( textureValue > 85 && textureValue < 170 )
 		{
-			cv::circle( _imageArray[GR_OUTPUT_IMAGE], cv::Point(j,i), 1, cv::Scalar(textureValue,textureValue,textureValue), -1, 8, 0 );
+			cv::circle( _imageArray[GR_OUTPUT_IMAGE], cv::Point(j,i), 1, cv::Scalar(0,textureValue,textureValue), -1, 8, 0 );
 		}
 		else  if ( textureValue > 170 && textureValue < 255 )
 		{
-			cv::circle( _imageArray[GR_OUTPUT_IMAGE], cv::Point(j,i), 1, cv::Scalar(textureValue,textureValue,textureValue), -1, 8, 0 );
+			cv::circle( _imageArray[GR_OUTPUT_IMAGE], cv::Point(j,i), 1, cv::Scalar(0,textureValue,textureValue), -1, 8, 0 );
 		}			
 	}
 	toPPM(img);

@@ -60,7 +60,7 @@ int main(int argc, char** argv)
 
 		    tracker.setHeatMapImage(*(new cv::Mat(frame.size(),CV_8UC4)));
 
-		}https://scontent-a-lhr.xx.fbcdn.net/hphotos-xpa1/t1.0-9/q71/s720x720/1526150_10152278128689457_5340708029920574435_n.jpg
+		}
 
 		if( i%FRAME_REINIT == 0 ) 
 		{
@@ -79,32 +79,12 @@ int main(int argc, char** argv)
 
 			tracker.runAlgos();
 
-			//corners.insert(corners.end(),tracker.getCorners()->begin(),tracker.getCorners()->end());
 			corners = *tracker.getCorners();
-			//outCorners.insert(outCorners.end(),tracker.getOutCorners()->begin(),tracker.getOutCorners()->end());
 			outCorners = *tracker.getOutCorners();
 			tracker.reallocCorners();
 
 			for( size_t i = 0; i < corners.size(); i++ )
-	    	{ /*
-	    		color = ((corners[i].x - outCorners[i].x)*255/frame.size().width + (corners[i].y - outCorners[i].y)*255/frame.size().height)/2 ;
-	    		//std::cout<<"Color found : "<<color<<std::endl;
-	    		if ( color < 0 ) 
-	    		{
-	    			color = -color;
-	    		}
-	    		if ( color > 45 && color < 85 )
-	    		{
-	 				cv::circle( videoFrame, corners[i], 1, cv::Scalar(85,0,0), -1, 8, 0 );
-	    		}
-	    		else if ( color > 85 && color < 170 )
-	    		{
-	 				cv::circle( videoFrame, corners[i], 1, cv::Scalar(0,color,color), -1, 8, 0 );
-	    		}
-	    		else  if ( color > 170 && color < 255 )
-	    		{
-	 				cv::circle( videoFrame, corners[i], 1, cv::Scalar(0,0,color), -1, 8, 0 );
-	    		}*/
+	    	{
 	 			tracker.plotField(videoFrame,corners[i],outCorners[i]);
 	   		}
 	   		for( size_t i = 0; i<tracker.getCorners()->size();i++)

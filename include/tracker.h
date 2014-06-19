@@ -32,6 +32,7 @@
 #include "pyrLukasKanade.h"
 #include "hornSchunck.h"
 #include "lic.h"
+#include "sift.h"
 #include <cmath>
 //#include "gaitPrint.h"
 
@@ -45,12 +46,14 @@ private:
 	cv::Mat*		_imageArray;
 	Corner* 		_corners;
     Corner* 		_outCorners;
+    KeyPoint*		_keypoints;
     CornerFinder* 	_cornerFinder;
 	CornerPrecizer*	_cornerPrecizer;
 	LukasKanade*	_lukasKanade;
 	PyrLukasKanade*	_pyrLK;
 	HornSchunck*	_hornSchunck;
 	LIC*			_lic;
+	SIFT*			_sift;
 	bool			_init;
 
 public:
