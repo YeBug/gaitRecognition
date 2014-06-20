@@ -24,8 +24,9 @@ Tracker::Tracker()
 
 	_imageArray = new cv::Mat[GR_IMAGE_NUMBER];
 	_corners = new Corner[GR_CORNER_NUMBER];
+	_keypoints = new KeyPoint[GR_CORNER_NUMBER];
 
-_imageArray[GR_MASK_TRACK_IMAGE] = cv::Mat();
+	_imageArray[GR_MASK_TRACK_IMAGE] = cv::Mat();
 
 	_cornerFinder = new CornerFinder(_imageArray,_corners,cornerCount);
 	_cornerPrecizer = new CornerPrecizer(_imageArray,_corners);
@@ -33,7 +34,7 @@ _imageArray[GR_MASK_TRACK_IMAGE] = cv::Mat();
 	_pyrLK = new PyrLukasKanade(_imageArray,_corners,cornerCount);
 	_hornSchunck = new HornSchunck(_imageArray);
 	_lic = new LIC(_imageArray,_corners,_corners);
-	_sift = new SIFT(_imageArray,_keypoints);
+	_surf = new SURF(_imageArray,_keypoints);
 
 	_init = true;
 
@@ -46,6 +47,9 @@ Tracker::~Tracker()
 void Tracker::runAlgos()
 {
  	int color;
+	cv::FlannBasedMatcher matcher;
+	std::vector<cv::DMatch> matchingKp;
+
  	//_imageArray[GR_OUTPUT_IMAGE] = *(new cv::Mat(_imageArray[GR_INPUT_IMAGE].size(),CV_8UC4));
 
  	if ( _init ) 
@@ -60,13 +64,27 @@ void Tracker::runAlgos()
 		_cornerPrecizer->perform();
 		_init = false;
 		_pyrLK->setCount(_corners->size());
+		_imageArray[GR_INPUT_IMAGE].copyTo(_imageArray[GR_SURF_IMAGE]);
+		_surf->perform();
 	}
+	_prevKeypoints = _keypoints;
+	_imageArray[GR_SURF_IMAGE].copyTo(_imageArray[GR_SURF_PREV_IMAGE]);
 	_pyrLK->perform();
 	_outCorners = _pyrLK->getOutCorners();
 	_lic->refillDatas(_corners,_outCorners);
-	_lic->perform();
-	_sift->perform();
+	//_lic->perform();
+	_imageArray[GR_OUTPUT_IMAGE].copyTo(_imageArray[GR_SURF_IMAGE]);
+	_surf->perform();
 
+	matcher.match(_imageArray[GR_SURF_IMAGE],
+					_imageArray[GR_SURF_PREV_IMAGE],
+					matchingKp);
+	cv::drawMatches(_imageArray[GR_INPUT_IMAGE],
+					*_prevKeypoints,
+					_imageArray[GR_OUTPUT_IMAGE],
+					*_keypoints,
+					matchingKp,
+					_imageArray[GR_VELY_IMAGE]);
 
 	for( size_t i = 0; i < _keypoints->size(); i++ )
 	{
@@ -75,12 +93,12 @@ void Tracker::runAlgos()
 	
 
 
-	cv::imwrite("dst.png",_imageArray[GR_OUTPUT_IMAGE]);
+	cv::imwrite("dst.png",_imageArray[GR_VELY_IMAGE]);
 	
 	cv::namedWindow( "test", cv::WINDOW_AUTOSIZE );// Create a window for display.
-    cv::imshow( "HeatMap", _imageArray[GR_INPUT_IMAGE] );
-    cv::namedWindow( "HeatMap", cv::WINDOW_AUTOSIZE );// Create a window for display.
-    cv::imshow( "HeatMap", _imageArray[GR_OUTPUT_IMAGE] ); 
+    cv::imshow( "test", _imageArray[GR_VELY_IMAGE] );
+   // cv::namedWindow( "HeatMap", cv::WINDOW_AUTOSIZE );// Create a window for display.
+   // cv::imshow( "HeatMap", _imageArray[GR_OUTPUT_IMAGE] ); 
 	
 }
 

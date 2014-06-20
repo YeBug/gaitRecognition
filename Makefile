@@ -36,7 +36,7 @@ testTexture : $(BDIR)testTexture
 
 
 # Target to create the real execs, own creation
-$(BDIR)testOpenCv: $(ODIR)algorithmeEnum.o  $(ODIR)corner.o  $(ODIR)cornerFinder.o  $(ODIR)cornerPrecizer.o  $(ODIR)hornSchunck.o $(ODIR)imageAlgorithme.o $(ODIR)imageEnum.o $(ODIR)lukasKanade.o  $(ODIR)main.o $(ODIR)opticalFlowCalculater.o $(ODIR)pyrLukasKanade.o $(ODIR)tracker.o $(ODIR)lic.o $(ODIR)sift.o
+$(BDIR)testOpenCv: $(ODIR)algorithmeEnum.o  $(ODIR)corner.o  $(ODIR)cornerFinder.o  $(ODIR)cornerPrecizer.o  $(ODIR)hornSchunck.o $(ODIR)imageAlgorithme.o $(ODIR)imageEnum.o $(ODIR)lukasKanade.o  $(ODIR)main.o $(ODIR)opticalFlowCalculater.o $(ODIR)pyrLukasKanade.o $(ODIR)tracker.o $(ODIR)lic.o $(ODIR)sift.o $(ODIR)surf.o
 	$(CC)  $(CCFLAGS) $(CPPFLAGS) $^ -o $@ $(OPENCVLIBS) $(LIBS)
 
 

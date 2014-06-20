@@ -10,7 +10,7 @@
  */
 
 /**
- * @file lukasKanade.cpp 
+ * @file sift.cpp 
  *
  * algorithme finding corners points in a picture/image/frame using Shi and Tomasi Algorithme or Harris' one
  */

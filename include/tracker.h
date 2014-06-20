@@ -33,10 +33,11 @@
 #include "hornSchunck.h"
 #include "lic.h"
 #include "sift.h"
+#include "surf.h"
 #include <cmath>
 //#include "gaitPrint.h"
 
-#define GR_IMAGE_NUMBER 14 
+#define GR_IMAGE_NUMBER 16
 #define GR_CORNER_NUMBER 500
 
 class Tracker
@@ -47,13 +48,14 @@ private:
 	Corner* 		_corners;
     Corner* 		_outCorners;
     KeyPoint*		_keypoints;
+    KeyPoint*		_prevKeypoints;
     CornerFinder* 	_cornerFinder;
 	CornerPrecizer*	_cornerPrecizer;
 	LukasKanade*	_lukasKanade;
 	PyrLukasKanade*	_pyrLK;
 	HornSchunck*	_hornSchunck;
 	LIC*			_lic;
-	SIFT*			_sift;
+	SURF*			_surf;
 	bool			_init;
 
 public:
