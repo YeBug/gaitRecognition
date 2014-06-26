@@ -75,7 +75,7 @@ int main(int argc, char** argv)
 			cv::GaussianBlur(frame, frame, cv::Size(7,7), 1.5, 1.5);
 
 			tracker.setInputImage2(frame);
-			tracker.setHeatMapImage(videoFrame);
+			//tracker.setHeatMapImage(videoFrame);
 
 			tracker.runAlgos();
 
@@ -86,11 +86,11 @@ int main(int argc, char** argv)
 			for( size_t i = 0; i < corners.size(); i++ )
 	    	{
 	 			tracker.plotField(videoFrame,corners[i],outCorners[i]);
-	   		}
+	   		}/*
 	   		for( size_t i = 0; i<tracker.getCorners()->size();i++)
 	   		{
    				cv::line( videoFrame, (*tracker.getCorners())[i],(*tracker.getOutCorners())[i],cv::Scalar(128,128,128),1,1,0);
-   			}
+   			}*/
 
 	   		
 			//out << *tracker.getOutputFrame();

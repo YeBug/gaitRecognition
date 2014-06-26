@@ -71,7 +71,7 @@ public:
 	Corner* getCorners();
 	Corner* getOutCorners();
 	void 	reallocCorners();
-	void plotField(cv::Mat& image, cv::Point2f x, cv::Point2f y);
+	void 	plotField(cv::Mat& image, cv::Point2f x, cv::Point2f y);
 //	GaitPrint computeGaitPrint();
 };
 #endif
