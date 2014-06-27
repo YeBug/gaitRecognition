@@ -92,6 +92,27 @@ int main(int argc, char** argv)
    				cv::line( videoFrame, (*tracker.getCorners())[i],(*tracker.getOutCorners())[i],cv::Scalar(128,128,128),1,1,0);
    			}*/
 
+   			cv::Mat img;
+   			videoFrame.copyTo(img);
+
+   			int nbW = videoFrame.size().width / 10;
+			int nbH = videoFrame.size().height / 10;
+
+			for (int i = 0;i < 10*nbW ; i+=nbW)
+			{
+				for(int j = 0;j < 10*nbH; j+=nbH)
+				{
+					if ( i == 9*nbW && j == 9*nbH )
+					{
+						continue;
+					}
+					//std::cout<<"i/j :"<<i<<"/"<<j<<"/"<<10*nbW<<std::endl;
+					cv::line( img,corners[i+j*nbW],corners[i+j*nbW+1],cv::Scalar(0,0,color,color),1,1,0);
+				}
+			}
+			
+			cv::addWeighted(img,0.3,videoFrame,1-0.3,0,videoFrame);
+
 	   		
 			//out << *tracker.getOutputFrame();
 			//tracker.getOverlayFrame()->copyTo(videoFrame);

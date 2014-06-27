@@ -66,6 +66,7 @@ public:
 	void setHeatMapImage(cv::Mat img);
 	void setInputImage1(cv::Mat img);
 	void setInputImage2(cv::Mat img);
+	void addCorners();
 	cv::Mat* getOutputFrame();
 	cv::Mat* getOverlayFrame();
 	Corner* getCorners();

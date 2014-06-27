@@ -60,7 +60,8 @@ void Tracker::runAlgos()
  		_cornerFinder->setCorner(_corners);
  		_cornerPrecizer->setCorner(_corners);
  		_pyrLK->setCorner(_corners);
- 		_cornerFinder->perform();
+ 		//_cornerFinder->perform();
+ 		addCorners();
 		_cornerPrecizer->perform();
 		_init = false;
 		_pyrLK->setCount(_corners->size());
@@ -147,6 +148,21 @@ void Tracker::reallocCorners()
     _corners = _outCorners;
 }
 
+void Tracker::addCorners()
+{
+	int nbW = _imageArray[GR_INPUT_IMAGE].size().width / 10;
+	int nbH = _imageArray[GR_INPUT_IMAGE].size().height / 10;
+
+	for (int i = 0;i < 10*nbW ; i+=nbW)
+	{
+		for(int j = 0;j < 10*nbH; j+=nbH)
+		{
+			//std::cout<<"i/j :"<<i<<"/"<<j<<"/"<<10*nbW<<std::endl;
+			_corners->push_back(*(new cv::Point2f(i,j)));
+		}
+	}
+}
+
 void Tracker::plotField(cv::Mat& image, cv::Point2f p1, cv::Point2f p2)
 {
 	if( _init) 
@@ -158,8 +174,8 @@ void Tracker::plotField(cv::Mat& image, cv::Point2f p1, cv::Point2f p2)
 	cv::Mat img;
 
 	int color;
-	int xColor = (p1.x - p2.x)*25500/image.size().width ;
-	int yColor = (p1.y - p2.y)*25500/image.size().height;
+	int xColor = (p1.x - p2.x)*10000/image.size().width ;
+	int yColor = (p1.y - p2.y)*10000/image.size().height;
 
 	image.copyTo(img);
 
@@ -175,9 +191,9 @@ void Tracker::plotField(cv::Mat& image, cv::Point2f p1, cv::Point2f p2)
 	color = xColor+yColor;
 	color /= 2; 
 	
-	std::cout<<"COLOR : "<<color<<std::endl;
-	cv::circle(img,p1,16,cv::Scalar(color,0,0,150),-1);
-	cv::circle(img,p1,8,cv::Scalar(0,color,0,150),-1);
+	//std::cout<<"COLOR : "<<color<<std::endl;
+	cv::circle(img,p1,8,cv::Scalar(color,0,0,150),-1);
+	cv::circle(img,p1,4,cv::Scalar(0,color,0,150),-1);
 	cv::circle(img,p1,1,cv::Scalar(0,0,color,150),-1);
 
 	cv::addWeighted(img,0.3,image,1-0.3,0,image);
