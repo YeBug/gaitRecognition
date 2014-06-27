@@ -92,6 +92,17 @@ void Tracker::runAlgos()
 		//cv::circle( _imageArray[GR_INPUT_IMAGE], (*_keypoints)[i], 2, cv::Scalar(0,150,150), -1, 8, 0 );
 	}*/
 	
+	int nbW = _imageArray[GR_INPUT_IMAGE].size().width / 10;
+	int nbH = _imageArray[GR_INPUT_IMAGE].size().height / 10;
+
+	for (int i = 0;i < 10*nbW ; i+=nbW)
+	{
+		for(int j = 0;j < 10*nbH; j+=nbH)
+		{
+			//std::cout<<"i/j :"<<i<<"/"<<j<<"/"<<10*nbW<<std::endl;
+			cv::line( image,p1,p2,cv::Scalar(0,0,color,color),1,1,0);
+		}
+	}
 
 
 	cv::imwrite("dst.png",_imageArray[GR_INPUT_IMAGE]);

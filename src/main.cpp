@@ -107,7 +107,7 @@ int main(int argc, char** argv)
 						continue;
 					}
 					//std::cout<<"i/j :"<<i<<"/"<<j<<"/"<<10*nbW<<std::endl;
-					cv::line( img,corners[i+j*nbW],corners[i+j*nbW+1],cv::Scalar(0,0,color,color),1,1,0);
+					cv::line( img,corners[i+j*nbW],corners[i+j*nbW+1c],cv::Scalar(0,0,color,color),1,1,0);
 				}
 			}
 			
