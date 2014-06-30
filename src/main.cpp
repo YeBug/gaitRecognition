@@ -28,6 +28,7 @@ int main(int argc, char** argv)
 	cv::VideoCapture cap(0);
 	Corner corners,outCorners;
 	int color;
+	int cSize;
 	cv::Mat toto;
 
 	if(!cap.isOpened())
@@ -83,7 +84,9 @@ int main(int argc, char** argv)
 			outCorners = *tracker.getOutCorners();
 			tracker.reallocCorners();
 
-			for( size_t i = 0; i < corners.size(); i++ )
+			cSize = tracker.getCornerSize();
+
+			for( size_t i = cSize; i < corners.size(); i++ )
 	    	{
 	 			tracker.plotField(videoFrame,corners[i],outCorners[i]);
 	   		}/*
@@ -98,16 +101,21 @@ int main(int argc, char** argv)
    			int nbW = videoFrame.size().width / 10;
 			int nbH = videoFrame.size().height / 10;
 
-			for (int i = 0;i < 10*nbW ; i+=nbW)
+			for (int i = 0;i < 11 ; i+=1)
 			{
-				for(int j = 0;j < 10*nbH; j+=nbH)
+				for(int j = 0;j < 11; j+=1)
 				{
-					if ( i == 9*nbW && j == 9*nbH )
+					if ( j == 10 )
 					{
 						continue;
 					}
 					//std::cout<<"i/j :"<<i<<"/"<<j<<"/"<<10*nbW<<std::endl;
-					cv::line( img,corners[i+j*nbW],corners[i+j*nbW+1c],cv::Scalar(0,0,color,color),1,1,0);
+					//cv::circle(img,corners[10*i+j+1],8,cv::Scalar(color,0,0,150),-1);
+					cv::line( img,corners[11*i+j+cSize],corners[11*i+j+1+cSize],cv::Scalar(0,0,color,color),1,1,0);
+					if ( i != 10 )
+					{
+						cv::line( img,corners[11*i+j+cSize],corners[11*i+j+11+cSize],cv::Scalar(0,0,color,color),1,1,0);
+					}
 				}
 			}
 			

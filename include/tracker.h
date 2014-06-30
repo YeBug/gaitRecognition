@@ -57,6 +57,7 @@ private:
 	LIC*			_lic;
 	SURF*			_surf;
 	bool			_init;
+	int 			_cornerSize;
 
 public:
 	Tracker();
@@ -67,6 +68,7 @@ public:
 	void setInputImage1(cv::Mat img);
 	void setInputImage2(cv::Mat img);
 	void addCorners();
+	int getCornerSize();
 	cv::Mat* getOutputFrame();
 	cv::Mat* getOverlayFrame();
 	Corner* getCorners();

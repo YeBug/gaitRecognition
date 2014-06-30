@@ -60,7 +60,8 @@ void Tracker::runAlgos()
  		_cornerFinder->setCorner(_corners);
  		_cornerPrecizer->setCorner(_corners);
  		_pyrLK->setCorner(_corners);
- 		//_cornerFinder->perform();
+ 		_cornerFinder->perform();
+ 		_cornerSize = _corners->size();
  		addCorners();
 		_cornerPrecizer->perform();
 		_init = false;
@@ -92,17 +93,7 @@ void Tracker::runAlgos()
 		//cv::circle( _imageArray[GR_INPUT_IMAGE], (*_keypoints)[i], 2, cv::Scalar(0,150,150), -1, 8, 0 );
 	}*/
 	
-	int nbW = _imageArray[GR_INPUT_IMAGE].size().width / 10;
-	int nbH = _imageArray[GR_INPUT_IMAGE].size().height / 10;
-
-	for (int i = 0;i < 10*nbW ; i+=nbW)
-	{
-		for(int j = 0;j < 10*nbH; j+=nbH)
-		{
-			//std::cout<<"i/j :"<<i<<"/"<<j<<"/"<<10*nbW<<std::endl;
-			cv::line( image,p1,p2,cv::Scalar(0,0,color,color),1,1,0);
-		}
-	}
+	
 
 
 	cv::imwrite("dst.png",_imageArray[GR_INPUT_IMAGE]);
@@ -112,6 +103,11 @@ void Tracker::runAlgos()
    // cv::namedWindow( "HeatMap", cv::WINDOW_AUTOSIZE );// Create a window for display.
    // cv::imshow( "HeatMap", _imageArray[GR_OUTPUT_IMAGE] ); 
 	
+}
+
+int Tracker::getCornerSize()
+{
+	return _cornerSize;
 }
 
 void Tracker::setInputImage1(cv::Mat img)
@@ -164,9 +160,9 @@ void Tracker::addCorners()
 	int nbW = _imageArray[GR_INPUT_IMAGE].size().width / 10;
 	int nbH = _imageArray[GR_INPUT_IMAGE].size().height / 10;
 
-	for (int i = 0;i < 10*nbW ; i+=nbW)
+	for (int i = 0;i < 11*nbW ; i+=nbW)
 	{
-		for(int j = 0;j < 10*nbH; j+=nbH)
+		for(int j = 0;j < 11*nbH; j+=nbH)
 		{
 			//std::cout<<"i/j :"<<i<<"/"<<j<<"/"<<10*nbW<<std::endl;
 			_corners->push_back(*(new cv::Point2f(i,j)));
