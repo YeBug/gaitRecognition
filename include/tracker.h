@@ -39,6 +39,7 @@
 
 #define GR_IMAGE_NUMBER 16
 #define GR_CORNER_NUMBER 500
+#define GR_GRID_SIZE 14
 
 class Tracker
 {

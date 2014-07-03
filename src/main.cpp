@@ -86,6 +86,8 @@ int main(int argc, char** argv)
 
 			cSize = tracker.getCornerSize();
 
+			cv::circle(videoFrame,corners[cSize+50],8,cv::Scalar(100,100,0),-1);
+
 			for( size_t i = cSize; i < corners.size(); i++ )
 	    	{
 	 			tracker.plotField(videoFrame,corners[i],outCorners[i]);
@@ -96,25 +98,30 @@ int main(int argc, char** argv)
    			}*/
 
    			cv::Mat img;
+   			int gSize = GR_GRID_SIZE;
+
+   			while ( videoFrame.size().width % gSize != 0
+   					&& videoFrame.size().height % gSize != 0)
+   			{
+   				gSize--;
+   			}
+
    			videoFrame.copyTo(img);
 
-   			int nbW = videoFrame.size().width / 10;
-			int nbH = videoFrame.size().height / 10;
-
-			for (int i = 0;i < 11 ; i+=1)
+			for (int i = 0;i < gSize+1 ; i+=1)
 			{
-				for(int j = 0;j < 11; j+=1)
+				for(int j = 0;j < gSize+1; j+=1)
 				{
-					if ( j == 10 )
+					if ( j == gSize )
 					{
 						continue;
 					}
 					//std::cout<<"i/j :"<<i<<"/"<<j<<"/"<<10*nbW<<std::endl;
 					//cv::circle(img,corners[10*i+j+1],8,cv::Scalar(color,0,0,150),-1);
-					cv::line( img,corners[11*i+j+cSize],corners[11*i+j+1+cSize],cv::Scalar(0,0,color,color),1,1,0);
-					if ( i != 10 )
+					cv::line( img,corners[(gSize+1)*i+j+cSize],corners[(gSize+1)*i+j+1+cSize],cv::Scalar(0,0,color,color),1,1,0);
+					if ( i != gSize )
 					{
-						cv::line( img,corners[11*i+j+cSize],corners[11*i+j+11+cSize],cv::Scalar(0,0,color,color),1,1,0);
+						cv::line( img,corners[(gSize+1)*i+j+cSize],corners[(gSize+1)*i+j+(gSize+1)+cSize],cv::Scalar(0,0,color,color),1,1,0);
 					}
 				}
 			}

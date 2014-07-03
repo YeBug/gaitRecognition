@@ -46,7 +46,7 @@ Tracker::~Tracker()
 
 void Tracker::runAlgos()
 {
- 	int color;
+ 	int color,c0;
 	//cv::FlannBasedMatcher matcher;
 	//std::vector<cv::DMatch> matchingKp;
 
@@ -63,6 +63,8 @@ void Tracker::runAlgos()
  		_cornerFinder->perform();
  		_cornerSize = _corners->size();
  		addCorners();
+ 		c0 = (*_corners)[_cornerSize+50].x;
+ 		std::cout<<"Corner 0 x :"<<c0<<std::endl;
 		_cornerPrecizer->perform();
 		_init = false;
 		_pyrLK->setCount(_corners->size());
@@ -72,7 +74,8 @@ void Tracker::runAlgos()
 	//_prevKeypoints = _keypoints;
 	//_imageArray[GR_SURF_IMAGE].copyTo(_imageArray[GR_SURF_PREV_IMAGE]);
 	_pyrLK->perform();
-	_outCorners = _pyrLK->getOutCorners();
+	_outCorners = _pyrLK->getOutCorners(); 		
+	std::cout<<"Corner x :"<<(*_outCorners)[_cornerSize+50].x-c0<<std::endl;
 	//_lic->refillDatas(_corners,_outCorners);
 	//_lic->perform();
 	//_imageArray[GR_OUTPUT_IMAGE].copyTo(_imageArray[GR_SURF_IMAGE]);
@@ -157,12 +160,21 @@ void Tracker::reallocCorners()
 
 void Tracker::addCorners()
 {
-	int nbW = _imageArray[GR_INPUT_IMAGE].size().width / 10;
-	int nbH = _imageArray[GR_INPUT_IMAGE].size().height / 10;
+	int gSize = GR_GRID_SIZE;
+	int nbW, nbH;
 
-	for (int i = 0;i < 11*nbW ; i+=nbW)
+   	while ( _imageArray[GR_INPUT_IMAGE].size().width % gSize != 0
+   			&& _imageArray[GR_INPUT_IMAGE].size().height % gSize != 0)
+   	{
+   		gSize--;
+   	}
+
+	nbW = _imageArray[GR_INPUT_IMAGE].size().width / gSize;
+	nbH = _imageArray[GR_INPUT_IMAGE].size().height / gSize;
+
+	for (int i = 0;i < (gSize+1)*nbW ; i+=nbW)
 	{
-		for(int j = 0;j < 11*nbH; j+=nbH)
+		for(int j = 0;j < (gSize+1)*nbH; j+=nbH)
 		{
 			//std::cout<<"i/j :"<<i<<"/"<<j<<"/"<<10*nbW<<std::endl;
 			_corners->push_back(*(new cv::Point2f(i,j)));
