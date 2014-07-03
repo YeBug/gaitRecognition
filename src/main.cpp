@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 	Tracker tracker;
 	cv::VideoWriter out;
 	cv::Size size;
-	cv::VideoCapture cap(0);
+	cv::VideoCapture cap("./data/indoorVideo_2.MP4");
 	Corner corners,outCorners;
 	int color;
 	int cSize;
@@ -33,6 +33,7 @@ int main(int argc, char** argv)
 
 	if(!cap.isOpened())
 	{
+		std::cerr<<"Video File not Supported"<<std::endl;
 		return -1;
 	}
 
