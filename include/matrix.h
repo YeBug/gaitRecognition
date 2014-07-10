@@ -190,6 +190,7 @@ class Matrix {
          * @version 1.0.0
          * @return return a double arr containing the row
          */
+        double* getRowNumber( int index ) const throw(MatrixException);
         double* getRowNumber( int index ) throw(MatrixException);
 
         /**

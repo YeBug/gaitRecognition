@@ -47,6 +47,7 @@ Tracker::~Tracker()
 void Tracker::runAlgos()
 {
  	int color,c0;
+ 	double acc =0;
 	//cv::FlannBasedMatcher matcher;
 	//std::vector<cv::DMatch> matchingKp;
 
@@ -64,7 +65,7 @@ void Tracker::runAlgos()
  		_cornerSize = _corners->size();
  		addCorners();
  		c0 = (*_corners)[_cornerSize+50].x;
- 		std::cout<<"Corner 0 x :"<<c0<<std::endl;
+ 		//std::cout<<"Corner 0 x :"<<c0<<std::endl;
 		_cornerPrecizer->perform();
 		_init = false;
 		_pyrLK->setCount(_corners->size());
@@ -75,7 +76,7 @@ void Tracker::runAlgos()
 	//_imageArray[GR_SURF_IMAGE].copyTo(_imageArray[GR_SURF_PREV_IMAGE]);
 	_pyrLK->perform();
 	_outCorners = _pyrLK->getOutCorners(); 		
-	std::cout<<"Corner x :"<<(*_outCorners)[_cornerSize+50].x-c0<<std::endl;
+	//std::cout<<"Corner x :"<<(*_outCorners)[_cornerSize+50].x-c0<<std::endl;
 	//_lic->refillDatas(_corners,_outCorners);
 	//_lic->perform();
 	//_imageArray[GR_OUTPUT_IMAGE].copyTo(_imageArray[GR_SURF_IMAGE]);
@@ -98,8 +99,7 @@ void Tracker::runAlgos()
 	
 	
 
-
-	cv::imwrite("dst.png",_imageArray[GR_INPUT_IMAGE]);
+	//cv::imwrite("dst.png",_imageArray[GR_INPUT_IMAGE]);
 	
 	//cv::namedWindow( "test", cv::WINDOW_AUTOSIZE );// Create a window for display.
     //cv::imshow( "test", _imageArray[GR_VELY_IMAGE] );
@@ -154,7 +154,7 @@ Corner* Tracker::getOutCorners()
 }
 
 void Tracker::reallocCorners()
-{	
+{
     _corners = _outCorners;
 }
 

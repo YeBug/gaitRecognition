@@ -35,7 +35,6 @@
 #include "sift.h"
 #include "surf.h"
 #include <cmath>
-//#include "gaitPrint.h"
 
 #define GR_IMAGE_NUMBER 16
 #define GR_CORNER_NUMBER 500
@@ -76,6 +75,5 @@ public:
 	Corner* getOutCorners();
 	void 	reallocCorners();
 	void 	plotField(cv::Mat& image, cv::Point2f x, cv::Point2f y);
-//	GaitPrint computeGaitPrint();
 };
 #endif

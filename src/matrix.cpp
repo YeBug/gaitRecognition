@@ -192,23 +192,23 @@ Matrix& Matrix::operator-=( const Matrix & m ) throw (MatrixException) {
  * @bug unable to understand why the algorithme is wrong
  */
 Matrix& Matrix::operator*( const Matrix & m ) throw (MatrixException) {
-    if ( m._column != _row || m._row != _column ) {
+    /*if ( m._column != _row ) {
 
         throw MatrixException(4);
     }
-
+*/
     Matrix ret(_row,_column);
     int max  = _row*_column;
     double s = 0;
 
-    for(int i=0;i<max;i++) {
-        for(int j=0+i%_column;j<_column+i%_column;j++) {
-
-            s += _matrix[j]*m._matrix[i+j%_column];
+    for(int i=0;i<_row;i++) {
+        for(int j=0;j<m._row;j++) {
+            for (int k =0;k<_column;k++){
+                s += this->getRowNumber(i)[k]*m.getRowNumber(k)[j];
+            }
+            ret.getRowNumber(i)[j]  = s;
+            s                       = 0;
         }
-
-        ret._matrix[i] = s;
-        s          = 0;
     }
 
     return *(new Matrix(ret));
@@ -328,6 +328,23 @@ istream & operator>>( istream & in, const Matrix & m ) {
  * @return return a double arr containing the row
  */
 double* Matrix::operator[]( int index ) throw(MatrixException) {
+
+    if ( index > _row ) {
+
+        throw MatrixException(3);
+    }
+
+    return(_matrix+index*_column);
+
+}
+
+/**
+ * @brief get a row
+ * @param index index of the row you want to go
+ * @version 1.0.0
+ * @return return a double arr containing the row
+ */
+double* Matrix::getRowNumber( int index ) const throw(MatrixException) {
 
     if ( index > _row ) {
 

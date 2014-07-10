@@ -17,8 +17,9 @@
 
 #include <iostream>
 #include "tracker.h"
+#include "regSinThread.h"
 
-#define FRAME_REINIT 10
+#define FRAME_REINIT 2
 
 int main(int argc, char** argv)
 {
@@ -30,6 +31,9 @@ int main(int argc, char** argv)
 	int color;
 	int cSize;
 	cv::Mat toto;
+	UnitVector x,y,t;
+	RegSinThread* xT;
+	RegSinThread* yT;
 
 	if(!cap.isOpened())
 	{
@@ -37,10 +41,13 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
+	x.resize(250);
+	y.resize(250);
+	t.resize(250);
 
 	size = cv::Size((int)cap.get(CV_CAP_PROP_FRAME_WIDTH), (int)cap.get(CV_CAP_PROP_FRAME_HEIGHT));
 
- 	out.open("./data/videoRec.avi",CV_FOURCC('P','I','M','1'),30,size,true);
+ 	out.open("./data/videoRec.avi",CV_FOURCC('P','I','M','1'),60,size,true);
 	if (!out.isOpened())
 	{
 		std::cout<<"fail rec"<<std::endl;
@@ -48,11 +55,13 @@ int main(int argc, char** argv)
 	}
 
 
-	for(int i=0;;i++)
+	for(int frameNumber=0;frameNumber<504+50*2;frameNumber++)
 	{
 		cv::Mat videoFrame, frame;
+		double accX = 0;
+		double accY = 0;
 		
-		if (i == 0 )
+		if (frameNumber == 0 )
 		{
 			cap >> videoFrame;
 			cvtColor(videoFrame, frame, CV_BGR2GRAY);
@@ -64,7 +73,7 @@ int main(int argc, char** argv)
 
 		}
 
-		if( i%FRAME_REINIT == 0 ) 
+		if( frameNumber%FRAME_REINIT == 0 ) 
 		{
 			tracker.reInit();
 			//corners.clear();
@@ -139,13 +148,49 @@ int main(int argc, char** argv)
 
 			tracker.setInputImage1(frame);
 
-			if( cv::waitKey(30) >= 0) 
+			/*if( cv::waitKey(30) >= 0) 
 			{
 				break;
+			}*/
+			for(int i = 0;i<cSize;i++)
+			{
+				accX +=((outCorners)[i].x-(corners)[i].x);
 			}
+			accX /= cSize;
+			//std::cout<<"accX : "<<accX<<std::endl;
+
+			for(int i = 0;i<cSize;i++)
+			{
+				accY +=((outCorners)[i].y-(corners)[i].x);
+			}
+			accY /= cSize;
+			//std::cout<<"accY : "<<accY<<std::endl;
+
+
+			if(frameNumber>50&& frameNumber<502+50*2)
+			{
+				x[frameNumber/2-50] = accX;
+				y[frameNumber/2-50] = accY;
+				t[frameNumber/2-50] = (frameNumber/2-50);
+ 			}
+
+ 			if(frameNumber == 503+50*2 )
+ 			{
+ 				std::cout<<"Computing Gait Print...."<<std::endl;
+ 				xT = new RegSinThread(x,t);
+ 				yT = new RegSinThread(y,t);
+ 				xT->start();
+ 				yT->start();
+ 			}
 		}
        
 	}
-	
+	xT->join();
+	yT->join();
+
+	std::cout<<"x(t) = "<<xT->getFunction()->toString()<<std::endl;
+	std::cout<<"y(t) = "<<yT->getFunction()->toString()<<std::endl;
+
+
 	return 0;
 }
