@@ -13,7 +13,7 @@
 #define _SIFT_H
 
 /**
- * @file lukasKanade.h 
+ * @file sift.h 
  *
  * algorithme computing to find the optical flow, saved in vels img
  */

@@ -18,17 +18,17 @@
 #include <iostream>
 #include "regSinThread.h"
 
-Thread::Thread() : m_tid(0), m_running(0), m_detached(0) {}
+Thread::Thread() : cThread(0), isRunning(false), isDetached(false) {}
 
 Thread::~Thread()
 {
-    if (m_running == 1 && m_detached == 0) 
+    if (isRunning && !isDetached) 
     {
-        pthread_detach(m_tid);
+        pthread_detach(cThread);
     }
-    if (m_running == 1) 
+    if (isRunning) 
     {
-        pthread_cancel(m_tid);
+        pthread_cancel(cThread);
     }
 }
 
@@ -40,12 +40,12 @@ static void* runThread(void* arg)
 int Thread::join()
 {
     int result = -1;
-    if (m_running == 1) 
+    if (isRunning) 
     {
-        result = pthread_join(m_tid, NULL);
+        result = pthread_join(cThread, NULL);
         if (result == 0) 
         {
-            m_detached = 1;
+            isDetached = true;
         }
     }
     return result;
@@ -53,10 +53,10 @@ int Thread::join()
 
 int Thread::start()
 {
-    int result = pthread_create(&m_tid, NULL, runThread, this);
+    int result = pthread_create(&cThread, NULL, runThread, this);
     if (result == 0) 
     {
-        m_running = 1;
+        isRunning = true;
     }
     return result;
 }
@@ -64,19 +64,19 @@ int Thread::start()
 int Thread::detach()
 {
     int result = -1;
-    if (m_running == 1 && m_detached == 0) 
+    if (isRunning && !isDetached) 
     {
-        result = pthread_detach(m_tid);
+        result = pthread_detach(cThread);
         if (result == 0) 
         {
-            m_detached = 1;
+            isDetached = true;
         }
     }
     return result;
 }
 
 pthread_t Thread::self() {
-    return m_tid;
+    return cThread;
 }
 
 
