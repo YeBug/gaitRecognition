@@ -287,7 +287,7 @@ void * RegSinThread::run()
 	_functionComputed = new GaitPrint(a3,b3,c3,omega3);
 	_runned = true;
 
-	std::cout<<"Calculations ended, press ESC if you see this message twice"<<std::endl;
+	std::cout<<"Calculations ended, press ESC if you see this message twice"<<std::endl<<"Here is the result"<<_functionComputed->toString()<<std::endl;
 
 	return 0;
 }

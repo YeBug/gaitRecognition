@@ -1,0 +1,25 @@
+digraph G
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="runAlgos",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="CornerFinder::setCorner",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_corner_finder.html#a7d40ad75eaceb4275255352fc7898169",tooltip="This setter will be used if the user wants to change the array of Corners in use."];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="CornerPrecizer::setCorner",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_corner_precizer.html#a7d40ad75eaceb4275255352fc7898169",tooltip="This setter will be used if the user wants to change the array of Corners in use."];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="PyrLukasKanade::setCorner",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_pyr_lukas_kanade.html#a7d40ad75eaceb4275255352fc7898169",tooltip="This setter will be used if the user wants to change the array of Corners in use."];
+  Node1 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="CornerFinder::perform",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_corner_finder.html#a68888f139e418f88481aa86480de3cec",tooltip="This function perform the algorithme she is associated with."];
+  Node1 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="addCorners",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_tracker.html#a434f429d01e9b821e347c29eca0b6131",tooltip="This function add a certain number of corners that are used to display the heat map picture..."];
+  Node1 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="CornerPrecizer::perform",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_corner_precizer.html#a68888f139e418f88481aa86480de3cec",tooltip="This function perform the algorithme she is associated with."];
+  Node1 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="PyrLukasKanade::setCount",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_pyr_lukas_kanade.html#aff3d75dfcd9df870c2c7006e13ba7467",tooltip="This setter will be used if the user wants to change the number of corners that have been given as pa..."];
+  Node1 -> Node9 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="PyrLukasKanade::perform",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_pyr_lukas_kanade.html#a68888f139e418f88481aa86480de3cec",tooltip="This function perform the algorithme she is associated with."];
+  Node1 -> Node10 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="PyrLukasKanade::getOutCorners",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_pyr_lukas_kanade.html#a8e87b0b5311ffb15709e32d4e3e924c4",tooltip="This getter send back the output corners that have been computed."];
+}

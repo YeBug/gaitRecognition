@@ -1,0 +1,9 @@
+digraph G
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="transpose",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="getRowNumber",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_matrix.html#a9dc2b252a2c9f860d7bec91d69d443d0",tooltip="get a row"];
+}

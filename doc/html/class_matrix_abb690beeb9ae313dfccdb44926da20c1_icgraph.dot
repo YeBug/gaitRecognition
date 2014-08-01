@@ -1,0 +1,20 @@
+digraph G
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="subMatrix",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="determinant",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_matrix.html#abeafb2c12b1e41d4aee3d3ac9465b11b",tooltip="calculate a matrix det."];
+  Node2 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="cofactor",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_matrix.html#af52fff2104bbe72b4a4c615ef098d051",tooltip="return the cofactor of colum j and row i"];
+  Node3 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="comatrix",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_matrix.html#a015b096faff743c8392f4b0d3a823ee5",tooltip="calculate the comatrix using cofactors"];
+  Node4 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="inverse",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_matrix.html#a6f460b8f02c33a27dd7210134f4887f7",tooltip="calculate the inverse matrix using cofactors"];
+  Node5 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="RegSinThread::run",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_reg_sin_thread.html#a19683048b16c33f74b1a888822154d07",tooltip="Overload of run - Implementation of Jean Jacquelin algorithme to do Sinusoïdale RegressionThis is an ..."];
+  Node2 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

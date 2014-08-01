@@ -20,20 +20,22 @@
 #include "regSinThread.h"
 
 #define FRAME_REINIT 2
+#define FRAME_CORRECTOR 50
 
 int main(int argc, char** argv)
 {
 	Tracker tracker;
 	cv::VideoWriter out;
 	cv::Size size;
-	cv::VideoCapture cap("./data/indoorVideo_2.MP4");
+	cv::VideoCapture cap("./data/GOPR0019.MP4");
 	Corner corners,outCorners;
 	int color;
 	int cSize;
 	cv::Mat toto;
-	UnitVector x,y,t;
+	UnitVector x,y,t,t2;
 	RegSinThread* xT;
 	RegSinThread* yT;
+	int nbFrame;
 
 	if(!cap.isOpened())
 	{
@@ -41,11 +43,15 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
-	x.resize(250);
-	y.resize(250);
-	t.resize(250);
+	x.resize(10000);
+	y.resize(10000);
+	t.resize(10000);
+	t2.resize(10000);
 
 	size = cv::Size((int)cap.get(CV_CAP_PROP_FRAME_WIDTH), (int)cap.get(CV_CAP_PROP_FRAME_HEIGHT));
+
+	
+	nbFrame = 3250;
 
  	out.open("./data/videoRec.avi",CV_FOURCC('P','I','M','1'),60,size,true);
 	if (!out.isOpened())
@@ -55,7 +61,7 @@ int main(int argc, char** argv)
 	}
 
 
-	for(int frameNumber=0;frameNumber<504+50*2;frameNumber++)
+	for(int frameNumber=0;frameNumber<nbFrame;frameNumber++)
 	{
 		cv::Mat videoFrame, frame;
 		double accX = 0;
@@ -76,8 +82,6 @@ int main(int argc, char** argv)
 		if( frameNumber%FRAME_REINIT == 0 ) 
 		{
 			tracker.reInit();
-			//corners.clear();
-			//outCorners.clear();
 		}
 		else 
 		{
@@ -86,7 +90,6 @@ int main(int argc, char** argv)
 			cv::GaussianBlur(frame, frame, cv::Size(7,7), 1.5, 1.5);
 
 			tracker.setInputImage2(frame);
-			//tracker.setHeatMapImage(videoFrame);
 
 			tracker.runAlgos();
 
@@ -101,11 +104,7 @@ int main(int argc, char** argv)
 			for( size_t i = cSize; i < corners.size(); i++ )
 	    	{
 	 			tracker.plotField(videoFrame,corners[i],outCorners[i]);
-	   		}/*
-	   		for( size_t i = 0; i<tracker.getCorners()->size();i++)
-	   		{
-   				cv::line( videoFrame, (*tracker.getCorners())[i],(*tracker.getOutCorners())[i],cv::Scalar(128,128,128),1,1,0);
-   			}*/
+	   		}
 
    			cv::Mat img;
    			int gSize = GR_GRID_SIZE;
@@ -126,8 +125,6 @@ int main(int argc, char** argv)
 					{
 						continue;
 					}
-					//std::cout<<"i/j :"<<i<<"/"<<j<<"/"<<10*nbW<<std::endl;
-					//cv::circle(img,corners[10*i+j+1],8,cv::Scalar(color,0,0,150),-1);
 					cv::line( img,corners[(gSize+1)*i+j+cSize],corners[(gSize+1)*i+j+1+cSize],cv::Scalar(0,0,color,color),1,1,0);
 					if ( i != gSize )
 					{
@@ -139,8 +136,6 @@ int main(int argc, char** argv)
 			cv::addWeighted(img,0.3,videoFrame,1-0.3,0,videoFrame);
 
 	   		
-			//out << *tracker.getOutputFrame();
-			//tracker.getOverlayFrame()->copyTo(videoFrame);
 			cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
 	    	cv::imshow( "Display window", videoFrame); 
 	    	
@@ -148,48 +143,46 @@ int main(int argc, char** argv)
 
 			tracker.setInputImage1(frame);
 
-			/*if( cv::waitKey(30) >= 0) 
-			{
-				break;
-			}*/
+		
 			for(int i = 0;i<cSize;i++)
 			{
 				accX +=((outCorners)[i].x-(corners)[i].x);
 			}
 			accX /= cSize;
-			//std::cout<<"accX : "<<accX<<std::endl;
 
 			for(int i = 0;i<cSize;i++)
 			{
 				accY +=((outCorners)[i].y-(corners)[i].x);
 			}
 			accY /= cSize;
-			//std::cout<<"accY : "<<accY<<std::endl;
 
 
-			if(frameNumber>50&& frameNumber<502+50*2)
+			if(frameNumber>FRAME_CORRECTOR&& frameNumber<nbFrame)
 			{
-				x[frameNumber/2-50] = accX;
-				y[frameNumber/2-50] = accY;
-				t[frameNumber/2-50] = (frameNumber/2-50);
+				x[frameNumber/2-FRAME_CORRECTOR] = accX;
+				y[frameNumber/2-FRAME_CORRECTOR] = accY;
+				t[frameNumber/2-FRAME_CORRECTOR] = (frameNumber/2-FRAME_CORRECTOR);
+				t2[frameNumber/2-FRAME_CORRECTOR] = (frameNumber/2-FRAME_CORRECTOR);
  			}
 
- 			if(frameNumber == 503+50*2 )
+ 			if(frameNumber == nbFrame || frameNumber == nbFrame -1 )
  			{
  				std::cout<<"Computing Gait Print...."<<std::endl;
  				xT = new RegSinThread(x,t);
- 				yT = new RegSinThread(y,t);
+ 				yT = new RegSinThread(y,t2);
  				xT->start();
  				yT->start();
  			}
+/*
+ 			if( cv::waitKey(30) >= 0) 
+			{
+				break;
+			}*/
 		}
        
 	}
 	xT->join();
 	yT->join();
-
-	std::cout<<"x(t) = "<<xT->getFunction()->toString()<<std::endl;
-	std::cout<<"y(t) = "<<yT->getFunction()->toString()<<std::endl;
 
 
 	return 0;

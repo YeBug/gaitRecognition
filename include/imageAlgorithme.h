@@ -25,16 +25,42 @@
 #include "imageEnum.h"
 #include "corner.h"
 
+/**
+ * This Class define the superclass of image algorithm that will be used in all the software or in further implementation
+ * @version 1.0.0
+ * @author Reynald Pereira
+ */
 class ImageAlgorithme   
 {
 
 protected:
-	cv::Mat*		_imageArray;
+	cv::Mat*		_imageArray; /** array containing all images used in the whole software */
 
 public:
+	/**
+	 * @brief Constructor only used in inherited class. It fixes all parameters to a basic value. 
+	 * @version 1.0.0
+	 * @author Reynald Pereira
+	 */
 	ImageAlgorithme();
+	/**
+	 * @brief Constructor only used in inherited class. It fixes all parameters to a basic value. 
+	 * @param array Array of pictures (the one set in imageAlgorithme.h using the enum imageEnum.h)
+	 * @version 1.0.0
+	 * @author Reynald Pereira
+	 */
 	ImageAlgorithme(cv::Mat* array);
+    /**
+     * @brief Basic destructor of the class.  Nerver to be used    
+     * @version 1.0.0
+     * @author Reynald Pereira
+     */
 	~ImageAlgorithme();
+	/**
+	 * @brief This function performe the algorithme she is associated with
+	 * @version 1.0.0
+	 * @author Reynald Pereira
+	 */
 	virtual void perform() = 0;
 };
 
